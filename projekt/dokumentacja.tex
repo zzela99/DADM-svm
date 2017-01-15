@@ -1,0 +1,56 @@
+\documentclass[11pt]{article}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\begin{document}
+\title{Dokumentacja projekt SVM quadratic \LaTeX-u}
+\author{Katarzyna Krzywonos,Aleksandra Lubzińska}
+
+\section{Dokumentacja}
+Dokumentacja projekt SVM quadratic
+
+\subsection{class SVMClassifier}
+\textbf{class SVMClassifier} - klasa klasyfikatora\\
+Zmienne protected klasy SVMClassifier:\\
+\textbf{double C} - wartość C typu double, ustawiona na 1.0\\
+\textbf{double epsilon} - wartosc epsilon ustawiona na 0.0001\\
+\textbf{char fNameTrain[256]} - nazwa pliku z próbkami treningowymi, maksymalna długość 256\\
+\textbf{char fNameTest[256]} - nazwa pliku z próbkami testowymi, maksymalna długość 256\\
+\textbf{char fNameResults[256]} - nazwa pliku z rezultatami, maksymalna długość 256\\  
+\textbf{int N }- liczba próbek treningowych poczatkowa wartość 0\\
+\textbf{int NTestSamples} - liczba próbek testowych poczatkowa wartość 0\\
+\textbf{TVectorArray arrayX} - macierz próbek treningowych\\
+\textbf{TFloatArray arrayY }- macierz próbek testowych\\
+\textbf{TFloatArray alpha} - wektor z wartosciami alpha, poczatkowa inicjalizacja zerami\\
+\textbf{TFloatArray d }- macierz pomocnicza w obliczeniach\\
+\textbf{TFloatArray arrayError }- macierz błedów \\
+\textbf{float b }- wartość b\\
+\textbf{float bDiff }- delta b\\
+
+Metody klasy SVMClassifier:\\
+\textbf{SVMClassifier()} - konstruktor, tworzy obiekt SVMClassifier\\
+\textbf{~SVMClassifier()} - destruktor\\
+\textbf{int train() }- funkcja ucząca klasyfikatora,implementuje główna procedure uczenia minimalną optymalizacja sekwencyjna, zapisuje rezultaty do pliku\\
+\textbf{int examineExample(int i1) }- funkcja która przy wywołaniu otrzymuje indeks alphy, sprawdza warunki KKT(herustyka) oraz wyszukuje wartosci alpha2, następnie wywołuje funkcje takeStep() - optymalizacja dwóch punktów\\
+\textbf{int takeStep(int i1, int i2)}- optymalizacja dwóch mnożników Lagrange'a, zwraca 1 w przypadku udanej optymalizacji, 0 w przypadku nieudanej, i1, i2 - indexy alph\\
+\textbf{int predict()}- funkcja klasyfikująca próbki testowe\\
+\textbf{float errorRate()} - funkcja zwracająca Error Rate;\\
+\textbf{int loadResults(std::ifstream is)}- funkcja otwierająca/tworząca plik z rezultatami \\
+\textbf{void writeResultModel(std::ofstream os)} - funkcja zapisująca rezultaty do pliku\\
+\textbf{float kernel(int i1, int i2)} - funkcja quadratic kernel zwracająca wartość K\\
+\textbf{float learnedFnc(int k)} - wywoływane po zoptymalizowaniu, wylicza wartość nauczonej funkcji w punkcie k\\
+
+
+\subsection{Another functions}
+typedef std::pair $\langle int, float \rangle$ TVectorDim\\
+typedef std::vector $\langle TVectorDim \rangle$ TVector\\
+typedef std::vector $\langle TVector \rangle$ TVectorArray\\
+\textbf{int splitCSV(const TString\& s, char c, TStringArray\& v)} - funkcja rozdzielająca plik .csv\\
+\textbf{int readSample(TString\& s, TVector\& x, float\& y)}- funkcja czytająca pojedyńczą próbkę z pliku csv\\
+\textbf{int writeSample(TString\& s, TVector\& x, float\& y)} - funkcja zapisującą próbkę do macierzy z cechami oraz z etykietami klasy\\
+\textbf{int partReadSample(std::ifstream\& is, TVectorArray\& arrayX, TFloatArray\& arrayY, int\& n) }- funkcja czytająca cały plik z próbkami\\
+\textbf{int partWriteSample(std::ofstream\& os, TVectorArray\& arrayX, TFloatArray\& arrayY, int\& n)} - funkcja zapisująca do pliku\\
+\textbf{float dotProduct(const TVector\& v1, const TVector\& v2)} - funkcja obliczająca iloczyn skalarny\\
+\textbf{TVector operator*(const TVector\& v, float f) }- przeciążenie operatora 
+\textbf{TVector operator*(float f, const TVector\& v)}- zwraca wektor v*f\\
+\textbf{TVector operator+(const TVector\& v1, const TVector\& v2) }- przeciążenie operatora +\\
+\end{document}

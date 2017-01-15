@@ -17,7 +17,7 @@
 
 #define TOLERANCE 1e-6
 #define NUMBER_OF_ITERATIONS 30000
-#define ITERATIONS_WITH_CONST_ERR 30000
+#define ITERATIONS_WITH_CONST_ERR 3000
 
 typedef std::string TString;
 typedef std::vector<std::string> TStringArray;
