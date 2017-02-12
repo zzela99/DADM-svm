@@ -15,7 +15,7 @@ SVMClassifier::SVMClassifier() {
 	strcpy(fNameResults, "resul.csv");
 	strcpy(fNameTest, "testset.csv");
 
-	N = 0;
+	N = 0;					//pocz¹tkowe za³o¿enie 0 iloœci próbek
 	NTestSamples = 0;
 	b = 0.0;
 	bDiff = 0.0;
@@ -90,16 +90,16 @@ int SVMClassifier::predict() {
 
 int SVMClassifier::train() {
 
-	arrayX.clear();
-	arrayY.clear();
-	d.clear();
+	arrayX.clear();				// czyszczenie tablicy X, Y,d
+	arrayY.clear();				
+	d.clear();					
 
-	ifstream trainFileIn(fNameTrain);
+	ifstream trainFileIn(fNameTrain); 	//wczytywanie pliku wejœciowego trainset
 	partReadSample(trainFileIn, arrayX, arrayY, N);
 
-	alpha.resize(N, 0.0);
+	alpha.resize(N, 0.0);		//zmiana wielkoœci wektora z mno¿nikiemami Lagrange'a. inicjalizacja zerami
 	b = 0.0;
-	arrayError.resize(N, 0.0);
+	arrayError.resize(N, 0.0);	//zmiana wielkoœci wektora Errorów
 
 	d.resize(N);
 	for (int i = 0; i < N; i++) {
@@ -113,17 +113,17 @@ int SVMClassifier::train() {
 	int rounds = 0;
 	int sameRounds = 0;
 	while ((numChangedAlpha > 0 || examineAll) && rounds < NUMBER_OF_ITERATIONS && sameRounds < ITERATIONS_WITH_CONST_ERR) {
-		prevNumChangedAlpha = numChangedAlpha;
-		numChangedAlpha = 0;
+		prevNumChangedAlpha = numChangedAlpha;	//przypisanie poprzedniej alphy do nowej
+		numChangedAlpha = 0;					//wyzerowanie
 
-		rounds++;
+		rounds++;								//dodanie iteracji
 		if (examineAll) {
-			for (int k = 0; k < N; k++) {
-				numChangedAlpha += examineExample(k);
+			for (int k = 0; k < N; k++) {		// pêtla z N przejœciami 
+				numChangedAlpha += examineExample(k); //przez wszytskie próbki treningowe
 			}
 		}
 		else {
-			for (int k = 0; k < N; k++) {
+			for (int k = 0; k < N; k++) {		// pêtla przechodz¹ca przez wszytskie przyk³ady gdzie alpha nie jest równa 0 i nie jest równa C
 				if (alpha[k] != 0 && alpha[k] != C) {
 					numChangedAlpha += examineExample(k);
 				}
@@ -235,17 +235,17 @@ int SVMClassifier::examineExample(int i1) {
 	}
 
 	r1 = y1 * e1;
-	if ((r1 < -TOLERANCE && alpha1 < C) || (r1 > TOLERANCE && alpha1 > 0)) {
+	if ((r1 < -TOLERANCE && alpha1 < C) || (r1 > TOLERANCE && alpha1 > 0)) { // warunek czy poza tolerancj¹
 		int k0 = 0;
 		int k = 0;
 		int i2 = -1;
 		float tmax = 0.0;
-		for (i2 = -1, tmax = 0, k = 0; k < N; k++) {
-			if (alpha[k] > 0 && alpha[k] < C) {
+		for (i2 = -1, tmax = 0, k = 0; k < N; k++) {		
+			if (alpha[k] > 0 && alpha[k] < C) {				// alpha2 te¿ musi byæ w zakresie (0,C)
 				float e2 = 0.0;
 				float temp = 0.0;
 				e2 = arrayError[k];
-				temp = fabs(e1 - e2);
+				temp = fabs(e1 - e2);						// sprawdza warunek dla alpha2 max(E1-E2)
 				if (temp > tmax) {
 					tmax = temp;
 					i2 = k;
@@ -257,7 +257,7 @@ int SVMClassifier::examineExample(int i1) {
 				}
 			}
 		}
-		for (k0 = (int)(drand48() * N), k = k0; k < N + k0; k++) {
+		for (k0 = (int)(drand48() * N), k = k0; k < N + k0; k++) {	// szukanie alphy[i2] przez nie=0 i nie=alpha, pocz¹tek w losowym punkcie
 			i2 = k % N;
 			if (alpha[i2] > 0 && alpha[i2] < C) {
 				if (takeStep(i1, i2)) {
@@ -265,7 +265,7 @@ int SVMClassifier::examineExample(int i1) {
 				}
 			}
 		}
-		for (k0 = (int)(drand48() * N), k = k0; k < N + k0; k++) {
+		for (k0 = (int)(drand48() * N), k = k0; k < N + k0; k++) {	// pêtla przez wszytskie mo¿liwe i2, pocz¹tek w losowym punkcie
 			i2 = k % N;
 			if (takeStep(i1, i2)) {
 				return 1;

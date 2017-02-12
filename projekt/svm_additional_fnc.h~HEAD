@@ -13,18 +13,12 @@
 
 
 
-<<<<<<< HEAD:svm/svm/svm_additional_fnc.h
 #define TOLERANCE 1e-6
 #define NUMBER_OF_ITERATIONS 30000
-#define ITERATIONS_WITH_CONST_ERR 3000
-=======
-#define TOLERANCE 1e-6							// zdefiniowana wartoœæ tolerancji
-#define NUMBER_OF_ITERATIONS 30000				// zdefiniowana wartoœæ iteracji
-#define ITERATIONS_WITH_CONST_ERR 30000			// zdefiniowana wartoœæ iteracji z tym samym b³êdem
->>>>>>> Update:projekt/svm_additional_fnc.h
+#define ITERATIONS_WITH_CONST_ERR 30000
 
 typedef std::string TString;
-typedef std::vector<std::string> TStringArray;	
+typedef std::vector<std::string> TStringArray;
 
 typedef std::pair<int, float> TVectorDim;
 typedef std::vector<TVectorDim> TVector;
@@ -32,7 +26,7 @@ typedef std::vector<TVector> TVectorArray;
 
 typedef std::vector<float> TFloatArray;
 
-int splitCSV(const TString& s, char c, TStringArray& v);	// funkcja rozdzielaj¹ca dane z pliku csv do 
+int splitCSV(const TString& s, char c, TStringArray& v);
 bool cmp(const TVectorDim& p1, const TVectorDim& p2);
 
 int readSample(TString& s, TVector& x, float& y);

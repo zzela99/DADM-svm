@@ -45,6 +45,7 @@
 \contentsline {subsection}{\numberline {7.2}Matlab - implementacja}{38}
 \contentsline {subsection}{\numberline {7.3}C++ - implementacja}{38}
 \contentsline {subsection}{\numberline {7.4}Podsumowanie}{38}
+<<<<<<< HEAD
 \contentsline {section}{\numberline {8}Quadratic SVM}{40}
 \contentsline {subsection}{\numberline {8.1}SMO}{40}
 \contentsline {subsubsection}{\numberline {8.1.1}Opis og\IeC {\'o}lny procedury}{40}
@@ -60,3 +61,37 @@
 \contentsline {subsection}{\numberline {9.3}Czas uczenia i klasyfikacji}{45}
 \contentsline {subsection}{\numberline {9.4}Czu\IeC {\l }o\IeC {\'s}\IeC {\'c} i specyficzno\IeC {\'s}\IeC {\'c} klasyfikator\IeC {\'o}w}{45}
 \contentsline {subsection}{\numberline {9.5}Podsumowanie}{46}
+=======
+\contentsline {section}{\numberline {8}QSVM}{40}
+\contentsline {subsection}{\numberline {8.1}Quadratic SVM (ang. quadratic kernel-free non-linear support vector machine)}{40}
+\contentsline {subsubsection}{\numberline {8.1.1}Kernel}{40}
+\contentsline {subsubsection}{\numberline {8.1.2}Quadratic Programming}{40}
+\contentsline {subsubsection}{\numberline {8.1.3}SMO}{41}
+\contentsline {subsubsection}{\numberline {8.1.4}Opis og\IeC {\'o}lny procedury}{41}
+\contentsline {subsubsection}{\numberline {8.1.5}Rozwi\IeC {\k a}zanie analityczne dla dw\IeC {\'o}ch punkt\IeC {\'o}w}{41}
+\contentsline {subsection}{\numberline {8.2}Implementacja rozwi\IeC {\k a}zania C++}{44}
+\contentsline {subsubsection}{\numberline {8.2.1}Zaproponowane rozwi\IeC {\k a}zanie}{44}
+\contentsline {subsubsection}{\numberline {8.2.2}Dokumentacja}{46}
+\contentsline {subsubsection}{\numberline {8.2.3}Another functions}{47}
+\contentsline {subsubsection}{\numberline {8.2.4}Aplikacja}{48}
+\contentsline {subsubsection}{\numberline {8.2.5}Wymagania techniczne}{48}
+\contentsline {subsubsection}{\numberline {8.2.6}Uruchamianie aplikacji}{48}
+\contentsline {subsection}{\numberline {8.3}Badania eksperymentalne}{48}
+\contentsline {subsubsection}{\numberline {8.3.1}Zbi\IeC {\'o}r Iris}{49}
+\contentsline {subsubsection}{\numberline {8.3.2}Wykorzystanie klasyfikatora do rozpoznawania uderze\IeC {\'n} serca}{49}
+\contentsline {subsubsection}{\numberline {8.3.3} Zbi\IeC {\'o}r danych 1}{50}
+\contentsline {subsubsection}{\numberline {8.3.4}Zbi\IeC {\'o}r danych 2}{50}
+\contentsline {subsubsection}{\numberline {8.3.5}Por\IeC {\'o}wnanie klasyfikacji z r\IeC {\'o}\IeC {\.z}na ilo\IeC {\'s}ci\IeC {\k a} cech}{51}
+\contentsline {subsection}{\numberline {8.4}Por\IeC {\'o}wnanie wynik\IeC {\'o}w r\IeC {\'o}\IeC {\.z}nych klasyfikator\IeC {\'o}w}{52}
+\contentsline {subsection}{\numberline {8.5}Zbi\IeC {\'o}r danych 1}{52}
+\contentsline {subsection}{\numberline {8.6}Zbi\IeC {\'o}r danych 2}{52}
+\contentsline {subsection}{\numberline {8.7}Wnioski}{53}
+\contentsline {section}{\numberline {9}Por\IeC {\'o}wnanie algorytm\IeC {\'o}w}{54}
+\contentsline {subsection}{\numberline {9.1}Opis zbior\IeC {\'o}w danych}{54}
+\contentsline {subsubsection}{\numberline {9.1.1}Zbi\IeC {\'o}r danych 1}{54}
+\contentsline {subsubsection}{\numberline {9.1.2}Zbi\IeC {\'o}r danych 2}{54}
+\contentsline {subsection}{\numberline {9.2}Skuteczno\IeC {\'s}\IeC {\'c} klasyfikacji}{54}
+\contentsline {subsection}{\numberline {9.3}Czas uczenia i klasyfikacji}{55}
+\contentsline {subsection}{\numberline {9.4}Czu\IeC {\l }o\IeC {\'s}\IeC {\'c} i specyficzno\IeC {\'s}\IeC {\'c} klasyfikator\IeC {\'o}w}{55}
+\contentsline {subsection}{\numberline {9.5}Podsumowanie}{56}
+>>>>>>> Update

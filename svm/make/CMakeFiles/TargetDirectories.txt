@@ -1,2 +1,0 @@
-E:/git/DADM-svm/svm/make/CMakeFiles/edit_cache.dir
-E:/git/DADM-svm/svm/make/CMakeFiles/rebuild_cache.dir
