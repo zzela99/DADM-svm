@@ -4,22 +4,22 @@
 \contentsline {subsubsection}{\numberline {1.2.1}Kernel}{4}
 \contentsline {subsubsection}{\numberline {1.2.2}Quadratic Programming}{4}
 \contentsline {subsection}{\numberline {1.3}SMO}{4}
-\contentsline {subsection}{\numberline {1.4}Opis og\IeC {\'o}lny procedury}{4}
-\contentsline {subsection}{\numberline {1.5}Rozwi\IeC {\k a}zanie analityczne dla dw\IeC {\'o}ch punkt\IeC {\'o}w}{5}
-\contentsline {section}{\numberline {2}Implementacja rozwi\IeC {\k a}zania C++}{8}
-\contentsline {subsection}{\numberline {2.1}Zaproponowane rozwi\IeC {\k a}zanie}{8}
-\contentsline {subsection}{\numberline {2.2}Dokumentacja}{12}
-\contentsline {subsection}{\numberline {2.3}Another functions}{13}
-\contentsline {subsection}{\numberline {2.4}Aplikacja}{13}
-\contentsline {subsubsection}{\numberline {2.4.1}Wymagania techniczne}{13}
-\contentsline {subsubsection}{\numberline {2.4.2}Uruchamianie aplikacji}{14}
-\contentsline {section}{\numberline {3}Badania eksperymentalne}{15}
-\contentsline {subsection}{\numberline {3.1}Zbi\IeC {\'o}r Iris}{15}
-\contentsline {subsection}{\numberline {3.2}Wykorzystanie klasyfikatora do rozpoznawania uderze\IeC {\'n} serca}{16}
-\contentsline {subsubsection}{\numberline {3.2.1} Zbi\IeC {\'o}r danych 1}{16}
-\contentsline {subsubsection}{\numberline {3.2.2}Zbi\IeC {\'o}r danych 2}{18}
-\contentsline {subsubsection}{\numberline {3.2.3}Por\IeC {\'o}wnanie klasyfikacji z r\IeC {\'o}\IeC {\.z}na ilo\IeC {\'s}ci\IeC {\k a} cech}{19}
-\contentsline {section}{\numberline {4}Por\IeC {\'o}wnanie wynik\IeC {\'o}w r\IeC {\'o}\IeC {\.z}nych klasyfikator\IeC {\'o}w}{20}
-\contentsline {subsection}{\numberline {4.1}Zbi\IeC {\'o}r danych 1}{20}
-\contentsline {subsection}{\numberline {4.2}Zbi\IeC {\'o}r danych 2}{21}
-\contentsline {subsection}{\numberline {4.3}Wnioski}{22}
+\contentsline {subsection}{\numberline {1.4}Opis og\IeC {\'o}lny procedury}{5}
+\contentsline {subsection}{\numberline {1.5}Rozwi\IeC {\k a}zanie analityczne dla dw\IeC {\'o}ch punkt\IeC {\'o}w}{6}
+\contentsline {section}{\numberline {2}Implementacja rozwi\IeC {\k a}zania C++}{9}
+\contentsline {subsection}{\numberline {2.1}Zaproponowane rozwi\IeC {\k a}zanie}{9}
+\contentsline {subsection}{\numberline {2.2}Dokumentacja}{13}
+\contentsline {subsection}{\numberline {2.3}Another functions}{14}
+\contentsline {subsection}{\numberline {2.4}Aplikacja}{15}
+\contentsline {subsubsection}{\numberline {2.4.1}Wymagania techniczne}{15}
+\contentsline {subsubsection}{\numberline {2.4.2}Uruchamianie aplikacji}{15}
+\contentsline {section}{\numberline {3}Badania eksperymentalne}{17}
+\contentsline {subsection}{\numberline {3.1}Zbi\IeC {\'o}r Iris}{17}
+\contentsline {subsection}{\numberline {3.2}Wykorzystanie klasyfikatora do rozpoznawania uderze\IeC {\'n} serca}{18}
+\contentsline {subsubsection}{\numberline {3.2.1} Zbi\IeC {\'o}r danych 1}{19}
+\contentsline {subsubsection}{\numberline {3.2.2}Zbi\IeC {\'o}r danych 2}{20}
+\contentsline {subsubsection}{\numberline {3.2.3}Por\IeC {\'o}wnanie klasyfikacji z r\IeC {\'o}\IeC {\.z}na ilo\IeC {\'s}ci\IeC {\k a} cech}{22}
+\contentsline {section}{\numberline {4}Por\IeC {\'o}wnanie wynik\IeC {\'o}w r\IeC {\'o}\IeC {\.z}nych klasyfikator\IeC {\'o}w}{23}
+\contentsline {subsection}{\numberline {4.1}Zbi\IeC {\'o}r danych 1}{23}
+\contentsline {subsection}{\numberline {4.2}Zbi\IeC {\'o}r danych 2}{24}
+\contentsline {subsection}{\numberline {4.3}Wnioski}{25}

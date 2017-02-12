@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2017.1.15)  12 FEB 2017 17:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2017.1.15)  12 FEB 2017 20:38
 entering extended mode
 **./ostateczna.tex
 (ostateczna.tex
@@ -6,8 +6,8 @@ LaTeX2e <2016/03/31> patch level 3
 Babel <3.9r> and hyphenation patterns for 75 language(s) loaded.
 ("C:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls"
 Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
-("C:\Program Files\MiKTeX 2.9\tex\latex\base\size10.clo"
-File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\size11.clo"
+File: size11.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
 \c@section=\count80
@@ -705,12 +705,7 @@ File: tikzlibrarycalc.code.tex 2013/07/15 v3.0.1a (rcs-revision 1.9)
 )
 \bcpos=\skip43
 \bcwidth=\skip44
-)
-
-LaTeX Warning: Unused global option(s):
-    [[10pt].
-
-(ostateczna.aux)
+) (ostateczna.aux)
 \openout1 = `ostateczna.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 6.
@@ -727,7 +722,8 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 6.
 LaTeX Font Info:    ... okay on input line 6.
 LaTeX Font Info:    Checking defaults for OT4/cmr/m/n on input line 6.
 LaTeX Font Info:    ... okay on input line 6.
- ("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
+
+("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count107
 \scratchdimen=\dimen151
@@ -820,23 +816,25 @@ Package pdftex.def Info: logo_agh.jpg used on input line 14.
 {C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map} <./logo_agh.jpg>] (ostatec
 zna.toc
 LaTeX Font Info:    External font `plex10' loaded for size
-(Font)              <10> on input line 2.
-LaTeX Font Info:    External font `plex10' loaded for size
-(Font)              <7> on input line 2.
-LaTeX Font Info:    External font `plex10' loaded for size
-(Font)              <5> on input line 2.
+(Font)              <10.95> on input line 2.
 )
 \tf@toc=\write4
 \openout4 = `ostateczna.toc'.
 
 
-[2] <SVM.png, id=17, 389.95688pt x 252.19218pt>
+[2]
+Overfull \hbox (3.50882pt too wide) in paragraph at lines 29--34
+\OT4/cmr/m/n/10.95 SVM (ang. sup-port vec-tor ma-chi-ne), czy-li ma-szy-na wek-
+to-rów no-±nych (wspie-
+ []
+
+<SVM.png, id=17, 389.95688pt x 252.19218pt>
 File: SVM.png Graphic file (type png)
  <use SVM.png>
 Package pdftex.def Info: SVM.png used on input line 35.
 (pdftex.def)             Requested size: 389.95592pt x 252.19156pt.
 
-Overfull \hbox (44.95592pt too wide) in paragraph at lines 35--35
+Overfull \hbox (29.95592pt too wide) in paragraph at lines 35--35
  [] 
  []
 
@@ -859,7 +857,7 @@ LaTeX Font Info:    Try loading font information for OMS+cmr on input line 87.
  ("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 87.
  [5 <./3.png>]
 <1.png, id=39, 408.77719pt x 186.6975pt>
@@ -868,62 +866,68 @@ File: 1.png Graphic file (type png)
 Package pdftex.def Info: 1.png used on input line 123.
 (pdftex.def)             Requested size: 408.77618pt x 186.69704pt.
 
-Overfull \hbox (63.77618pt too wide) in paragraph at lines 123--123
+Overfull \hbox (48.77618pt too wide) in paragraph at lines 123--123
  [] 
  []
 
-[6 <./1.png>]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[6] [7 <./1.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 188--190
 
  []
 
-[7]
+[8]
 Underfull \hbox (badness 10000) in paragraph at lines 195--196
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 227--228
-[]\OT4/cmr/m/n/10 std::cout $\OML/plm/m/it/10 <$$<$ \OT4/cmr/m/n/10 "Tra-in ti-
-me:\OMS/cmsy/m/n/10 n\OT4/cmr/m/n/10 t" $\OML/plm/m/it/10 <$$<$ \OT4/cmr/m/n/10
- (do-uble(train - be-gin) /
+Underfull \hbox (badness 3792) in paragraph at lines 227--228
+[]\OT4/cmr/m/n/10.95 std::cout $\OML/plm/m/it/10.95 <$$<$ \OT4/cmr/m/n/10.95 "T
+ra-in ti-me:\OMS/cmsy/m/n/10.95 n\OT4/cmr/m/n/10.95 t" $\OML/plm/m/it/10.95 <$$
+<$ \OT4/cmr/m/n/10.95 (do-uble(train - be-gin) /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 229--230
-[]\OT4/cmr/m/n/10 std::cout $\OML/plm/m/it/10 <$$<$ \OT4/cmr/m/n/10 "Pre-dict t
-i-me:\OMS/cmsy/m/n/10 n\OT4/cmr/m/n/10 t" $\OML/plm/m/it/10 <$$<$ \OT4/cmr/m/n/
-10 (do-uble(predict - tra-in) /
+Underfull \hbox (badness 1097) in paragraph at lines 229--230
+[]\OT4/cmr/m/n/10.95 std::cout $\OML/plm/m/it/10.95 <$$<$ \OT4/cmr/m/n/10.95 "P
+re-dict ti-me:\OMS/cmsy/m/n/10.95 n\OT4/cmr/m/n/10.95 t" $\OML/plm/m/it/10.95 <
+$$<$ \OT4/cmr/m/n/10.95 (do-uble(predict - tra-in) /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 231--232
-[]\OT4/cmr/m/n/10 std::cout $\OML/plm/m/it/10 <$$<$ \OT4/cmr/m/n/10 "To-tal ti-
-me:\OMS/cmsy/m/n/10 n\OT4/cmr/m/n/10 t" $\OML/plm/m/it/10 <$$<$ \OT4/cmr/m/n/10
- (do-uble(predict - be-gin) /
+Underfull \hbox (badness 1953) in paragraph at lines 231--232
+[]\OT4/cmr/m/n/10.95 std::cout $\OML/plm/m/it/10.95 <$$<$ \OT4/cmr/m/n/10.95 "T
+o-tal ti-me:\OMS/cmsy/m/n/10.95 n\OT4/cmr/m/n/10.95 t" $\OML/plm/m/it/10.95 <$$
+<$ \OT4/cmr/m/n/10.95 (do-uble(predict - be-gin) /
  []
 
 
-Overfull \hbox (19.20671pt too wide) in paragraph at lines 197--285
+Overfull \hbox (6.58174pt too wide) in paragraph at lines 197--285
 [][] 
  []
 
 
-Overfull \hbox (19.20671pt too wide) in paragraph at lines 197--285
+Overfull \hbox (6.58174pt too wide) in paragraph at lines 197--285
 [] 
  []
 
-[8] [9]
-Overfull \hbox (19.20671pt too wide) in paragraph at lines 288--437
+[9] [10]
+Overfull \hbox (6.58174pt too wide) in paragraph at lines 288--437
 [] 
  []
 
 
-Overfull \hbox (19.20671pt too wide) in paragraph at lines 288--437
+Overfull \hbox (6.58174pt too wide) in paragraph at lines 288--437
 [] 
  []
 
-[10] [11]
+[11]
+Overfull \vbox (79.5pt too high) has occurred while \output is active []
+
+ [12]
 Underfull \hbox (badness 10000) in paragraph at lines 442--443
 
  []
@@ -934,14 +938,20 @@ Underfull \hbox (badness 10000) in paragraph at lines 444--459
  []
 
 
+Overfull \hbox (4.19305pt too wide) in paragraph at lines 460--472
+\OT4/cmr/bx/n/10.95 int lo-adRe-sults(std::ifstream is)\OT4/cmr/m/n/10.95 - fun
+k-cja otwie-ra-j¡-ca/tworz¡ca plik
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 460--472
 
  []
 
-[12]
-Overfull \hbox (0.1205pt too wide) in paragraph at lines 476--490
-\OT4/cmr/bx/n/10 int par-tW-ri-te-Sam-ple(std::ofstream& os, TVec-to-rAr-ray& a
-r-rayX,
+[13]
+Overfull \hbox (9.32156pt too wide) in paragraph at lines 476--490
+\OT4/cmr/bx/n/10.95 int par-tRe-ad-Sam-ple(std::ifstream& is, TVec-to-rAr-ray& 
+ar-rayX,
  []
 
 
@@ -949,46 +959,52 @@ Underfull \hbox (badness 10000) in paragraph at lines 476--490
 
  []
 
-[13] <kompilacja.jpg, id=68, 514.92375pt x 237.88875pt>
+[14] [15] <kompilacja.jpg, id=74, 514.92375pt x 237.88875pt>
 File: kompilacja.jpg Graphic file (type jpg)
- <use kompilacja.jpg>
+
+<use kompilacja.jpg>
 Package pdftex.def Info: kompilacja.jpg used on input line 509.
 (pdftex.def)             Requested size: 325.22081pt x 95.397pt.
-
-<wywolanie.jpg, id=69, 511.9125pt x 108.405pt>
+ <wywolanie.jpg, id=75, 511.9125pt x 108.405pt>
 File: wywolanie.jpg Graphic file (type jpg)
- <use wywolanie.jpg>
+
+<use wywolanie.jpg>
 Package pdftex.def Info: wywolanie.jpg used on input line 514.
 (pdftex.def)             Requested size: 325.21706pt x 95.40164pt.
-
-<results.jpg, id=70, 734.745pt x 156.585pt>
+ <results.jpg, id=76, 734.745pt x 156.585pt>
 File: results.jpg Graphic file (type jpg)
- <use results.jpg>
+
+<use results.jpg>
 Package pdftex.def Info: results.jpg used on input line 520.
 (pdftex.def)             Requested size: 325.21713pt x 95.39963pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-
-Overfull \hbox (3.58284pt too wide) in paragraph at lines 526--527
-\OT4/cmr/m/n/10 W tej cz¦-±ci przed-sta-wi-my re-zu-la-ta-ty ba-da« eks-pe-ry-m
-en-tal-nych nad QSVM
+[16 <./kompilacja.jpg> <./wywolanie.jpg>] [17 <./results.jpg>] [18]
+Underfull \hbox (badness 10000) in paragraph at lines 588--588
+[]\OT4/cmr/m/n/10.95 Dobrze roz-po-
  []
 
-[14 <./kompilacja.jpg> <./wywolanie.jpg>]
-Overfull \hbox (7.53491pt too wide) in paragraph at lines 544--552
+
+Underfull \hbox (badness 10000) in paragraph at lines 591--591
+[]\OT4/cmr/m/n/10.95 Skuteczno±¢
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 591--591
+\OT4/cmr/m/n/10.95 roz-po-zna-wa-nia
+ []
+
+
+Overfull \hbox (33.3648pt too wide) in paragraph at lines 585--593
 [] 
  []
 
-[15 <./results.jpg>]
-Overfull \hbox (11.14313pt too wide) in paragraph at lines 561--561
-[]\OT4/cmr/bx/n/12 Wykorzystanie kla-sy-fi-ka-to-ra do roz-po-zna-wa-nia ude-
- []
-
-[16]
-Overfull \hbox (45.98978pt too wide) in paragraph at lines 585--593
-[] 
+[19]
+Overfull \hbox (8.99931pt too wide) in paragraph at lines 611--616
+\OT4/cmr/m/n/10.95 nych do wy-bra-nej kla-sy (po-praw-nie od-rzu-co-nych z $\OM
+L/plm/m/it/10.95 ang:correctrejection$\OT4/cmr/m/n/10.95 ) 
  []
 
 
@@ -997,43 +1013,48 @@ Underfull \hbox (badness 10000) in paragraph at lines 611--616
  []
 
 
-Overfull \hbox (16.96596pt too wide) in paragraph at lines 611--616
-\OT4/cmr/m/n/10 bra-nej kla-sy, pod-czas gdy w rze-czy-wi-sto-±ci do niej nie n
-a-le-»¡ ($\OML/plm/m/it/10 ang:falsealarm$\OT4/cmr/m/n/10 ) 
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 611--616
 
  []
 
-[17]
-Underfull \hbox (badness 10000) in paragraph at lines 644--644
-[]\OT4/cmr/m/n/10 Dobrze roz-po-
+[20]
+Overfull \hbox (0.25557pt too wide) in paragraph at lines 637--639
+[]\OT4/cmr/m/n/10.95 Stosunek licz-by pró-bek sy-gna-ªu, któ-rych pr¦d-ko±¢ prz
+e-kra-cza 40%
  []
 
 
-Overfull \hbox (31.53377pt too wide) in paragraph at lines 641--649
+Underfull \hbox (badness 1527) in paragraph at lines 644--644
+[]\OT4/cmr/m/n/10.95 Dobrze roz-po-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 647--647
+[]\OT4/cmr/m/n/10.95 Skuteczno±¢
+ []
+
+
+Overfull \hbox (18.9088pt too wide) in paragraph at lines 641--649
 [] 
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 676--676
-[]\OT4/cmr/bx/n/10 Skuteczno±¢
+[]\OT4/cmr/bx/n/10.95 Skuteczno±¢
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 676--676
-\OT4/cmr/bx/n/10 roz-po-zna-wa-nia
+\OT4/cmr/bx/n/10.95 roz-po-zna-wa-nia
  []
 
 
-Underfull \hbox (badness 2941) in paragraph at lines 678--678
-[]\OT4/cmr/bx/n/10 Czas kla-sy-fi-ka-
+Underfull \hbox (badness 10000) in paragraph at lines 677--677
+[]\OT4/cmr/bx/n/10.95 Czas ucze-nia
  []
 
 
-Overfull \hbox (51.26485pt too wide) in paragraph at lines 671--682
+Overfull \hbox (41.79613pt too wide) in paragraph at lines 671--682
 [] 
  []
 
@@ -1042,43 +1063,83 @@ Underfull \hbox (badness 10000) in paragraph at lines 671--682
 
  []
 
-[18] [19]
-Underfull \hbox (badness 10000) in paragraph at lines 700--700
-[]\OT4/cmr/bx/n/10 Linear
+[21] [22]
+Overfull \hbox (1.6479pt too wide) in paragraph at lines 693--693
+[]\OT4/cmr/bx/n/14.4 Porównanie wy-ni-ków ró»-nych kla-sy-fi-ka-to-rów 
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 700--700
-[]\OT4/cmr/bx/n/10 SVM
+[]\OT4/cmr/bx/n/10.95 SVM
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 700--700
-\OT4/cmr/bx/n/10 +
+\OT4/cmr/bx/n/10.95 +
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 700--700
-[]\OT4/cmr/bx/n/10 Naive
+[]\OT4/cmr/bx/n/10.95 Naive
+ []
+
+
+Overfull \hbox (3.24007pt too wide) in paragraph at lines 700--700
+[]\OT4/cmr/bx/n/10.95 QSVM| 
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 701--701
-[]\OT4/cmr/bx/n/10 Skuteczno±¢
+[]\OT4/cmr/bx/n/10.95 Skuteczno±¢
+ []
+
+
+Overfull \hbox (1.20242pt too wide) in paragraph at lines 701--701
+[]\OT4/cmr/m/n/10.95 99.7261| 
+ []
+
+
+Overfull \hbox (1.20242pt too wide) in paragraph at lines 701--701
+[]\OT4/cmr/m/n/10.95 92.8789| 
+ []
+
+
+Overfull \hbox (1.20242pt too wide) in paragraph at lines 701--701
+[]\OT4/cmr/m/n/10.95 99.8783| 
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 702--702
-[]\OT4/cmr/bx/n/10 Czas ucze-nia
+[]\OT4/cmr/bx/n/10.95 Czas ucze-nia
  []
 
 
-Underfull \hbox (badness 2941) in paragraph at lines 703--703
-[]\OT4/cmr/bx/n/10 Czas kla-sy-fi-ka-
+Overfull \hbox (1.20242pt too wide) in paragraph at lines 702--702
+[]\OT4/cmr/m/n/10.95 22.0936| 
  []
 
 
-Overfull \hbox (98.82501pt too wide) in paragraph at lines 696--708
+Overfull \hbox (1.20242pt too wide) in paragraph at lines 704--704
+[]\OT4/cmr/m/n/10.95 99.7129| 
+ []
+
+
+Overfull \hbox (1.20242pt too wide) in paragraph at lines 704--704
+[]\OT4/cmr/m/n/10.95 92.5678| 
+ []
+
+
+Overfull \hbox (1.20242pt too wide) in paragraph at lines 704--704
+[]\OT4/cmr/m/n/10.95 99.9681| 
+ []
+
+
+Overfull \hbox (1.20242pt too wide) in paragraph at lines 705--705
+[]\OT4/cmr/m/n/10.95 98.0132| 
+ []
+
+
+Overfull \hbox (89.3563pt too wide) in paragraph at lines 696--708
 [] 
  []
 
@@ -1097,113 +1158,103 @@ LaTeX Font Info:    Try loading font information for OT4+cmss on input line 723
 ("C:\Program Files\MiKTeX 2.9\tex\latex\polski\ot4cmss.fd"
 File: ot4cmss.fd 2008/02/24 v1.2.1 Font defs for fonts PL (MW)
 )
-Overfull \hbox (12.51991pt too wide) in paragraph at lines 723--727
-\OT4/cmr/m/it/10 Wykres 1. Wy-kres pro-cen-to-wy przed-sta-wia-j¡-cy sku-tecz-n
-o±¢ kla-sy-fi-ka-cji wszyst-
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 723--727
 
  []
 
-[20]
-Underfull \hbox (badness 10000) in paragraph at lines 732--732
-[]\OT4/cmr/bx/n/10 Linear
+[23]
+Overfull \hbox (2.62497pt too wide) in paragraph at lines 732--732
+[]\OT4/cmr/bx/n/10.95 Linear
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 732--732
-[]\OT4/cmr/bx/n/10 SVM
+[]\OT4/cmr/bx/n/10.95 SVM
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 732--732
-\OT4/cmr/bx/n/10 +
+\OT4/cmr/bx/n/10.95 +
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 732--732
-[]\OT4/cmr/bx/n/10 Naive
+[]\OT4/cmr/bx/n/10.95 Naive
  []
 
 
-Overfull \hbox (2.11743pt too wide) in paragraph at lines 732--732
-[]\OT4/cmr/bx/n/10 QSVM| 
+Overfull \hbox (5.40808pt too wide) in paragraph at lines 732--732
+[]\OT4/cmr/bx/n/10.95 QSVM| 
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 733--733
-[]\OT4/cmr/bx/n/10 Skuteczno±¢
+[]\OT4/cmr/bx/n/10.95 Skuteczno±¢
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 734--734
-[]\OT4/cmr/bx/n/10 Czas ucze-nia
+[]\OT4/cmr/bx/n/10.95 Czas ucze-nia
  []
 
 
-Underfull \hbox (badness 2941) in paragraph at lines 735--735
-[]\OT4/cmr/bx/n/10 Czas kla-sy-fi-ka-
- []
-
-
-Overfull \hbox (83.64891pt too wide) in paragraph at lines 729--741
+Overfull \hbox (74.18019pt too wide) in paragraph at lines 729--741
 [] 
  []
 
-[21]
-Overfull \hbox (12.51991pt too wide) in paragraph at lines 754--757
-\OT4/cmr/m/it/10 Wykres 2. Wy-kres pro-cen-to-wy przed-sta-wia-j¡-cy sku-tecz-n
-o±¢ kla-sy-fi-ka-cji wszyst-
- []
-
-[22]
-Underfull \hbox (badness 4454) in paragraph at lines 782--785
-\OT4/cmr/m/it/10 Mi-ni-mal Opti-mi-za-tion) and Qu-adra-tic Pro-gram-ming expla
--ined
+[24] [25]
+Underfull \hbox (badness 1019) in paragraph at lines 782--785
+[]\OT4/cmr/m/n/10.95 Juan Mi-gu-el \OT4/cmr/m/it/10.95 [SVM Ma-tlab co-de im-pl
+e-men-ta-tion] SMO (Se-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 782--785
-\OT4/cmr/m/n/10 http://laid.delanover.com/svm-matlab-code-implementation-smo-
+\OT4/cmr/m/it/10.95 qu-en-tial Mi-ni-mal Opti-mi-za-tion) and Qu-adra-tic Pro-g
+ram-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 782--785
-\OT4/cmr/m/n/10 sequential-minimal-optimization-and-quadratic-programming-
+\OT4/cmr/m/it/10.95 ming expla-ined \OT4/cmr/m/n/10.95 http://laid.delanover.co
+m/svm-matlab-code-
  []
 
-[23] (ostateczna.aux) ) 
+
+Underfull \hbox (badness 10000) in paragraph at lines 782--785
+\OT4/cmr/m/n/10.95 implementation-smo-sequential-minimal-optimization-and-
+ []
+
+[26] (ostateczna.aux) ) 
 Here is how much of TeX's memory you used:
- 12224 strings out of 493333
- 242879 string characters out of 3139194
- 287502 words of memory out of 3000000
- 15484 multiletter control sequences out of 15000+200000
- 14307 words of font info for 40 fonts, out of 3000000 for 9000
+ 12211 strings out of 493333
+ 242792 string characters out of 3139194
+ 287500 words of memory out of 3000000
+ 15477 multiletter control sequences out of 15000+200000
+ 12573 words of font info for 36 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,9n,58p,916b,730s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/pl/plrm.enc
 }{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/pl/plms.enc}{C:/Program Files/MiK
 TeX 2.9/fonts/enc/dvips/pl/plmi.enc}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvip
-s/pl/plsc.enc}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/pl/plme.enc}{C:/Prog
-ram Files/MiKTeX 2.9/fonts/enc/dvips/pl/plit.enc}<C:/Program Files/MiKTeX 2.9/f
-onts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/typ
-e1/public/pl/plbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/pl/plbx
-12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/pl/plex10.pfb><C:/Progra
-m Files/MiKTeX 2.9/fonts/type1/public/pl/plmi10.pfb><C:/Program Files/MiKTeX 2.
-9/fonts/type1/public/pl/plmi5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publ
-ic/pl/plmi7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/pl/plr10.pfb><C
-:/Program Files/MiKTeX 2.9/fonts/type1/public/pl/plr12.pfb><C:/Program Files/Mi
-KTeX 2.9/fonts/type1/public/pl/plr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/typ
-e1/public/pl/plr5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/pl/plr7.p
-fb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/pl/plss10.pfb><C:/Program Fi
-les/MiKTeX 2.9/fonts/type1/public/pl/plsy10.pfb><C:/Program Files/MiKTeX 2.9/fo
-nts/type1/public/pl/plsy5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/p
-l/plsy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/pl/plti10.pfb>
-Output written on ostateczna.pdf (23 pages, 403255 bytes).
+s/pl/plme.enc}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/pl/plit.enc}<C:/Prog
+ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program File
+s/MiKTeX 2.9/fonts/type1/public/pl/plbx10.pfb><C:/Program Files/MiKTeX 2.9/font
+s/type1/public/pl/plbx12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/pl
+/plex10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/pl/plmi10.pfb><C:/P
+rogram Files/MiKTeX 2.9/fonts/type1/public/pl/plmi6.pfb><C:/Program Files/MiKTe
+X 2.9/fonts/type1/public/pl/plmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/
+public/pl/plr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/pl/plr12.pf
+b><C:/Program Files/MiKTeX 2.9/fonts/type1/public/pl/plr17.pfb><C:/Program File
+s/MiKTeX 2.9/fonts/type1/public/pl/plr6.pfb><C:/Program Files/MiKTeX 2.9/fonts/
+type1/public/pl/plr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/pl/pls
+s10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/pl/plsy10.pfb><C:/Progr
+am Files/MiKTeX 2.9/fonts/type1/public/pl/plsy6.pfb><C:/Program Files/MiKTeX 2.
+9/fonts/type1/public/pl/plsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publ
+ic/pl/plti10.pfb>
+Output written on ostateczna.pdf (26 pages, 405261 bytes).
 PDF statistics:
- 164 PDF objects out of 1000 (max. 8388607)
+ 173 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  48 words of extra memory for PDF output out of 10000 (max. 10000000)
 
