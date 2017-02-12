@@ -1,0 +1,2204 @@
+\documentclass[[10pt,a4paper]{article}
+\usepackage[OT4]{polski}
+\usepackage[utf8]{inputenc} 
+\usepackage[left=25mm,right=25mm, top=20mm, bottom = 20mm]{geometry}
+\usepackage{graphicx}
+\usepackage[]{mcode}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{bchart}
+\lstset { %
+	language=C++,
+	backgroundcolor=\color{black!5}, % set backgroundcolor
+	basicstyle=\footnotesize,% basic font setting
+}
+
+\graphicspath{{obrazy/}}
+
+\begin{document}
+\title{Raport końcowy projektu z przedmiotu Dedykowane Algorytmy Diagnostyki Medycznej}
+\author{Katarzyna Kokosza\\ Olga Janiszewska\\ Kacper Banach \\ Jędrzej Chiliński 
+\\Joanna Lebica \\Piotr Olbrot \\ Iwona Struglik \\ Joanna Żuradzka \\ Aleksandra Rak \\ Kamelia Niemczyk \\ Katarzyna Krzywonos \\ Aleksandra Lubzińska }
+\date{12 stycznia 2017}
+\maketitle
+
+
+\begin{center}
+\includegraphics{logo_agh}\\
+\vspace{20mm}
+{\LARGE Klasyfikacja uderzeń serca}\\
+
+\end{center}
+
+\newpage
+\tableofcontents
+\vspace{10mm}
+\newpage
+\section{Abstrakt}
+Celem projektu jest detekcja oraz klasyfikacja kardiologicznych stanów pacjentów na podstawie sygnału EKG. Poprawne sklasyfikowanie występujących uderzeń serca jest bardzo ważne 
+i tak naprawdę może być podstawą do stwierdzenia o występowaniu arytmii. Wykrywając niepokojące zmiany w przebiegu EKG u danego pacjenta można odpowiednio wcześnie zastosować leczenie, co na pewno pozwoli uniknąć poważniejszych problemów natury kardiologicznej w przyszłości.  
+
+ Arytmie serca, czyli wszystkie odchylenia od normy w przebiegu EKG można podzielić na dwie grupy: te, które wymagają natychmiastowej interwencji lekarza oraz takie, 
+w których natychmiastowe leczenie nie jest konieczne. Jednak pominięcie leczenia w drugim przypadku również może w przyszłości prowadzić do poważniejszych stanów, w tym arytmii pierwszej grupy. 
+Klasyfikacja uderzeń, która zostanie przedstawiona w tym projekcie może być pomocą do rozpoznawania arytmii serca należącej do drugiej grupy. Sklasyfikowanie występujących rodzajów bicia serca jest podstawowym krokiem do stwierdzenia wystąpienia odchyleń w tej dziedzinie. Klasyfikacja ta jest bardzo czasochłonna i dlatego podjęto wiele prób w celu zautomatyzowania tego procesu . 
+
+
+ 	Projekt realizuje klasyfikację próbek sygnału EKG pochodzących od pacjenta za pomocą następujących klasyfikatorów: k-Neraest Neighbours (kNN), Extended Nerest Neighbours (eNN), Radial Basis Function Kernel (RBF SVM), klasyfikator Bayesa, Linear SVM, Quadratic SVM. Dla każdego algorytmu przedstawiono ich opisy oraz sposoby implementacji. Algorytmy działają na zasadzie uczenia – po wczytanie zbioru treningowego następuje uczenie, po którym następuje właściwa klasyfikacja dla zbioru testowego. Otrzymane wyniki (klasy dla poszczególnych próbek zbioru testowego) porównano z rzeczywistymi (właściwymi) klasami dla tych próbek, których wartości były znane. Dokonano porównania działania algorytmów na dwóch identycznych zbiorach danych, mierząc skuteczność, czas uczenia i klasyfikacji oraz czułość i specyficzność. 
+ 	\newpage
+
+\section{Linear SVM}
+\subsection{Opis algorytmu}
+\vspace{5mm}
+\subsubsection{Metoda wektorów wspierających (SVM)}
+\vspace{5mm}
+
+
+Maszyny wektorów wspierających (support vector machines) są modelami uczenia nadzorowanego, które analizują dane użyte do klasyfikacji i analizy regresji.
+ Wykorzystując zbiór danych uczących, każdy odpowiednio oznaczony zgodnie z klasą do której przynależy, algorytm SVM tworzy model, który potrafi
+przyporządkować analizowane dane do jednej z kategorii. 
+\vspace{5mm}
+
+
+Model SVM jest reprezentacją danych w postaci punktów w przestrzeni. Punkty należące do różnych klas znajdują się w innych obszarach przestrzeni i są rozdzielone za pomocą luki o jak największej możliwej szerokości. Kolejno, analizowany nowy punkt jest odpowiednio przyporządkowywany do jednej z kategorii na podstawie tego, z której strony luki się znajduje. Na rysunku nr 1 został przedstawiony rozkład punktów płaszczyzny należących do dwóch różnych kategorii. W tym wypadku na osiach znajdują się cechy, dzięki którym klasyfikowane są analizowane przypadki.
+\vspace{5mm}
+\begin{figure}[h]
+\centering
+\includegraphics{svm_theory}\\
+\caption{Wizualizacja punktów należących do dwóch klas wraz z rozdzielającą je hiperpłaszczyzną} 
+\textit{(opracowanie własne)}
+\end{figure}
+
+\vspace{10mm}
+Klasyfikacja danych jest najważniejszym zadaniem uczenia maszynowego. W metodzie wektorów wspierających dane są postaci wektora o rozmiarze $p$. Celem działania algorytmu jest wyznaczenie optymalnej hiperpłaszczyzny rozmiaru $p-1$, która rozdzielałaby dane należące do poszczególnych klas.
+Tego typu podejście jest nazywane klasyfikacją liniową. 
+\vspace{5mm}
+
+
+\indent Istnieje wiele hiperpłaszczyzn, które mogą rozdzielać dwie klasy. Przykładowo na rysunku 2 przedstawiono dwie klasy rozdzielone trzema różnymi hiperpłaszczyznami $H_1, H_2, H_3$. Problem polega na tym, aby wybrać jak najlepszą hiperpłaszczyznę, która w sposób najbardziej optymalny będzie rozdzielać dwie klasy. Taka hiperpłaszczyzna zostaje wybrana w taki sposób, aby była jak najbardziej oddalona zarówno od jednej jak i drugiej klasy. 
+
+
+\begin{figure}[h]
+\centering
+\includegraphics{svm_hyperplane}\\
+\caption{Wizualizacja trzech różnych hiperpłaszczyzn mogących rozdzielać dwie klasy }
+\textit{(opracowanie własne)}
+\end{figure}
+
+\newpage
+Klasyfikator maksymalnego marginesu znajduje hiperpłaszczyznę rozdzielającą dane treningowe na dwie klasy w ten sposób, że maksymalizuje wartość marginesu geometrycznego dla wszystkich punktów treningowych. Marginesem geometrycznym hiperpłaszczyzny jest jej odległość od najbliższych punktów. Punkty położone najbliżej hiperpłaszczyzny są nazywane wektorami wspierającymi (ang. $support$ $vectors$). Wektory wspierające zostały zaznaczone na rysunku 3.
+
+\begin{figure}[h]
+\centering
+\includegraphics{support_vectors}\\
+\caption{Wektory wspierające oznaczone wśród punktów treningowych }
+\textit{(opracowanie własne)}
+\end{figure}
+
+Klasyfikator maksymalnego marginesu jest klasyfikatorem liniowym i może być użyty do klasyfikacji danych, które są liniowo separowalne. W niniejszym projekcie przyjęto założenie, że separowane dane należą do dwóch klas. Klasyfikator maksymalnego marginesu jest klasyfikatorem binarnym.
+Załóżmy teraz, że mamy zbiór danych uczących składających się z $n$ punktów postaci:
+\newpage
+\begin{equation}
+ (\overrightarrow{x_1}, y_1),(\overrightarrow{x_2}, y_2),...,(\overrightarrow{x_n}, y_n)
+\end{equation}
+
+\vspace{5mm}
+gdzie $y_i$ to 1 lub -1 w zależności od klasy, do której należą, czyli od położenia po dodatniej lub ujemnej stronie hiperpłaszczyzny $H$. Każdy wektor $\overrightarrow{x_i}$ jest rozmiaru $p$. Działanie algorytmu SVM polega na znalezieniu hiperpłaszczyzny  o maksymalnym marginesie geometrycznym, która dzieli grupy punktów $\overrightarrow{x_i}$, dla których $y_i$ = -1 od grupy punktów  $\overrightarrow{x_i}$, dla których $y_i$ = 1.
+Hiperpłaszczyzna $H$, $n$-wymiarowa określona jest wzorem:
+
+\vspace{5mm}
+\begin{equation}
+(H)y(\overrightarrow{x}) = 0
+\end{equation}
+
+\vspace{5mm}
+gdzie $(y(\overrightarrow{x}) = w^t + b$, $w$ - wektor wagowy, $b$ - wyraz wolny. 
+Po przedstawionym wcześniej założeniu, że $y(x)$ = -1 lub $y(x)$ = 1, możemy przedstawić wzór na odległość punktu $x$ od danej hiperpłaszczyzny $H$. Przedstawia się on następująco:
+
+\vspace{5mm}
+\begin{equation}
+d(x,H) = \frac{|y(x)|}{||w||}
+\end{equation}
+
+\vspace{5mm}margines geometryczny natomiast, będzie dany wzorem:
+
+\vspace{5mm}
+\begin{equation}
+\gamma = \frac{1}{||w||}
+\end{equation}
+
+\vspace{5mm}Klasyfikator maksymalnego marginesu znajduje hiperpłaszczyznę, która maksymalizuje wartość marginesu geometrycznego czyli taką, dla której wartość  $||w||$ jest minimalna. 
+Maksymalizacja marginesu może zostać zapisana w postaci poniżej przedstawionego problemu optymalizacyjnego:
+
+\vspace{5mm}\centerline {$minimalizacja$  $||\overrightarrow{w}||^2$}
+
+\vspace{5mm} przy warunkach:
+
+\vspace{5mm}\centerline {$y_i(\overrightarrow{w}*\overrightarrow{x_i} - b)\geq 1$}
+
+\vspace{5mm}gdzie $i \in \{1..N\}$ oraz istnieje założenie o liniowej separowalności wektorów.
+
+\vspace{5mm}Można następnie dla powyższego problemu optymalizacyjnego zapisać lagranżjan postaci:
+
+\vspace{5mm}
+\begin{equation}
+L(w,b,\overrightarrow{\alpha}) = \frac{1}{2}\cdot||\overrightarrow{w}||^2 - \sum_{i=1}^{\ N} \alpha_i(y_i(\overrightarrow{w}* \overrightarrow{x_i} +b)-1) 
+\end{equation} 
+
+\vspace{5mm} gdzie $\overrightarrow{\alpha}$ to wektor mnożników Lagrange'a, o rozmiarze $N$.
+
+\vspace{5mm} Korzystając z lagranżjanu, przedstawiony problem optymalizacyjny może zostać zamieniony na formę dualną, w której funkcja celu jest wyłącznie zależna od mnożników Lagrange'a:
+
+\vspace{5mm}\centerline {$minimalizacja$  $funkcji:$}
+
+\vspace{5mm}\centerline {$\frac{1}{2} \sum_{i=1}^{\ N} \sum_{j=1}^{\ N} y_i y_j (\overrightarrow{x_i}\cdot\overrightarrow{x_j}) \alpha_i \alpha_j - \sum_{i=1}^{\ N} \alpha_i$}
+  
+\vspace{5mm} gdzie $N$ to liczba punktów treningowych
+
+\vspace{5mm} przy warunkach:
+
+\vspace{5mm}\centerline {$\alpha_i \geq 0, \forall i$ }
+
+\vspace{5mm}\centerline {$\sum_{i=1}^{\ N} y_i \alpha_i$ = 0 }
+
+\vspace{5mm}
+
+Kiedy współczynniki Lagrange'a zostaną wyznaczone, wektor $\overrightarrow{w}$ oraz wyraz wolny $b$ może zostać obliczony przy ich pomocy:
+\begin{equation}
+\overrightarrow{w} = \sum_{i=1}^{\ N} y_i \alpha_i \overrightarrow{x}_i,  
+\end{equation}
+
+\begin{equation}
+b = \overrightarrow{w} \cdot \overrightarrow{x}_i - y_i  
+\end{equation}
+dla pewnych  $\alpha_i > 0 $
+
+\vspace{5mm}Oczywiście, nie wszystkie zbiory danych mogą być liniowo separowalne. Może się okazać, że nie istnieje hiperpłaszczyzna, które rozdziela wszystkie punkty należące do jednej klasy od punktów należących do drugiej klasy. W takim właśnie przypadku można skorzystać z pewnej modyfikacji oryginalnego problemu optymalizacyjnego. Prezentuje się ona następująco: 
+
+\vspace{5mm}\centerline {$minimalizacja$  $||\overrightarrow{w}||^2+ C \sum_{i=1}^{\ N} \xi_i$}
+
+\vspace{5mm} przy warunkach:
+
+\vspace{5mm}\centerline {$y_i(\overrightarrow{w} \cdot \overrightarrow{x_i} - b)\geq 1 - \xi_i, \forall_i$}
+
+\vspace{5mm}gdzie $\xi_i$ to tak zwana zmienna luzu, która pozwala na błąd marginesu. 
+
+\vspace{5mm} Klasyfikator w tym wypadku bierze pod uwagę możliwe wahania wartości danych. Wektory wspierające w tym wypadku to nie tylko punkty znajdujące się najbliżej hiperpłaszczyzny, ale również dalsze. 
+
+\vspace{5mm}Forma dualna powyższego problemu przedstawia się następująco:
+
+\vspace{5mm}\centerline {$minimalizacja$  $funkcji:$}
+
+\vspace{5mm}\centerline {$\frac{1}{2} \sum_{i=1}^{\ N} \sum_{j=1}^{\ N} y_i y_j  K(\overrightarrow{x_i} \cdot\overrightarrow{x_j}) \alpha_i \alpha_j - \sum_{i=1}^{\ N} \alpha_i$}
+  
+\vspace{5mm} gdzie $N$ to liczba punktów treningowych
+
+\vspace{5mm} przy warunkach:
+
+\vspace{5mm}\centerline {$0 \leq \alpha_i \leq C, \forall i$ }
+
+\vspace{5mm}\centerline {$\sum_{i=1}^{\ N} y_i \alpha_i$ = 0 }
+
+\vspace{5mm} W tym wypadku współczynniki $\alpha$ będą również ograniczone z góry. 
+
+\vspace{5mm} Powyższy problem optymalizacyjny może zostać rozwiązany przy pomocy algorytmu \textit{sekwencyjnej minimalnej optymalizacji} który został szczegółowo opisany w kolejnym podrozdziale. 
+
+\newpage
+\subsubsection{Sekwencyjna minimalna optymalizacja (SMO)}
+SMO jest jednym z algorytmów pozwalających rozwiązać główny problem w nauczaniu SVM, czyli problem programowania kwadratowego (oznaczany jako \textit{QP}). SMO pozwala na uniknięcie problemów związanych z optymizacją numeryczną poprzez rozkład  całościowego problemu na podproblemy.
+
+
+W każdym kroku SMO rozwiązuje najmniejszy możliwy problem optymalizacji, czyli przypadek dwóch współczynników Lagrange'a, które są ograniczone liniowo. Oba współczynniki są jednocześnie optymalizowane, po czym aktualizowana jest cała maszyna wektorów nośnych i następnie algorytm wybiera dwa kolejne współczynniki do optymalizacji.
+
+
+SMO jest proste w implementacji oraz nie wymaga dużych zasobów pamięci do przechowywania zmiennych.
+
+
+SMO składa się z dwóch części - analitycznego poszukiwania pary współczynników Lagrange'a oraz heurystyki służącej wybieraniu kolejnych współczynników do optymalizacji.
+
+\subsubsection{Poszukiwanie współczynników Lagrange'a}
+
+Pierwszą czynnością, którą realizuje SMO, jest obliczenie ograniczeń współczynników. Po ich obliczeniu możliwa jest poszukiwanie minimum w ograniczonej przestrzeni. 
+
+Liniowy warunek równości powoduje, że współczynniki Lagrange'a leżą na prostej, przez co minimum optymalizowanej funkcji również musi na niej leżeć.
+Aby SMO spełniało ten warunek w każdym kroku, konieczne jest użycie dwóch współczynników.
+
+Algorytm oblicza drugi współczynnik  Lagrange'a $\alpha_{2}$, po czym oblicza końce odcinka leżącego na prostej spełniającej warunek równości. Jeżeli koniec $y_1$ nie jest równy końcowi $y_2$, wtedy stosuje się następujące ograniczenia dla $\alpha_2$:
+
+\begin{equation}
+L = max(0,\alpha_2 - \alpha_1),\quad H = (C,C + \alpha_2 - \alpha_1)
+\end{equation}
+
+Jeżeli koniec $y_1$ jest równy końcowi $y_2$, wtedy ograniczenia $\alpha_2$ zmieniają się następująco:
+
+\begin{equation}
+L = max(0,\alpha_2 + \alpha_1 - C),\quad H = (C, \alpha_2 + \alpha_1)
+\end{equation}
+
+Drugą pochodną funkcji docelowej wzdłuż odcinka można wyrazić jako:
+
+\begin{equation}
+\eta = K(\overrightarrow{x_1},\overrightarrow{x_1}) + K(\overrightarrow{x_2},\overrightarrow{x_2}) - 2K(\overrightarrow{x_1},\overrightarrow{x_2})
+\end{equation}
+
+W normalnych warunkach funkcja docelowa będzie określona dodatnio, minimum wystąpi wzdłuż prostej określonej liniowym warunkiem równości i $\eta$ będzie większe od zera. W takim przypadku SMO oblicza nieograniczone minimum wzdłuż całej prostej zgodnie z równaniem:
+
+\begin{equation}
+\label{alfa2nowy}
+\alpha_2^nowy = \alpha_2 + \frac{y_2(E_1-E_2)}{\eta},
+\end{equation}
+
+w którym $E_i = u_i - y_i$ oznacza błąd $i$-tej próbki ze zbioru uczącego. W kolejnym kroku znajdywane jest ograniczenie minimum poprzez porównanie z obliczonymi wcześniej końcami odcinka.
+
+\begin{equation}
+\alpha_2^{nowy,ograniczony} =  \begin{cases} 
+H & \text{jeżeli} \qquad \alpha_2^{nowy} \geq H \\
+\alpha_2^{nowy} & \text{jeżeli} \qquad L < \alpha_2^{nowy} < H \\
+L & \text{jeżeli} \qquad \alpha_2^{nowy} \leq L
+\end{cases}
+\end{equation}
+
+Używając oznaczenia $s=y_1 y_2$ wartość $\alpha_1$ można obliczyć wykorzystując nowy, ograniczony współczynnik $\alpha2$:
+
+\begin{equation}
+\alpha_1^{nowy} = \alpha_1 + s(\alpha_2 - \alpha_2^{nowy, ograniczony)}).
+\end{equation}
+
+W niezwykłych przypadkach $\eta$ nie będzie dodatnie. Ujemne $\eta$ wystąpi, gdy jądro $K$ nie spełni warunku Mercera, przez co funkcja docelowa może stać się nieoznaczona. Zerowe $\eta$ może wystąpić nawet z poprawnym jądrem, gdy więcej niż jedna próbka ucząca ma taki sami wektor wejściowy $x$. SMO zadziała nawet gdy $\eta$ nie jest dodatnie, w takim przypadku funkcja docelowa $\Psi$ powinna zostać policzona na każdym z końców odcinka:
+
+
+\begin{equation}
+f_1 = y_1(E_1+b) - \alpha_1 
+\end{equation}
+\begin{equation}
+f_2 = y_2(E_2+b) - s\alpha_1
+\end{equation}
+\begin{equation}
+K(\overrightarrow{x_1}, \overrightarrow{x_2}) - \alpha_2 K(\overrightarrow{x_2},\overrightarrow{x_2}),
+\end{equation}
+\begin{equation}
+L_1 = \alpha_1 + s(\alpha_2 - L),
+\end{equation}
+\begin{equation}
+H_1 = \alpha_1 + s(\alpha_2 - H),
+\end{equation}
+\begin{equation}
+\Psi_L = L_1 f_1 + Lf_2 + \frac{1}{2}L_1^2 K(\overrightarrow{x_1},\overrightarrow{x_1}) + \frac{1}{2}L^2 K(\overrightarrow{x_2},\overrightarrow{x_2}) + sLL_1 K(\overrightarrow{x_1},\overrightarrow{x_2}), 
+\end{equation}
+\begin{equation}
+\Psi_H = H_1 f_1 + Hf_2 + \frac{1}{2}H_1^2 K(\overrightarrow{x_1},\overrightarrow{x_1}) + \frac{1}{2}H^2 K(\overrightarrow{x_2},\overrightarrow{x_2}) + sHH_1 K(\overrightarrow{x_1},\overrightarrow{x_2}).
+\end{equation}
+
+
+SMO przesunie współczynniki Lagrange'a na ten koniec odcinka, w którym wartość funkcji docelowej jest najmniejsza. Jeżeli funkcja docelowa ma takie same wartości na obu końcach odcinka (uwzględniając mały błąd $\epsilon$ z powodu błędów zaokrągleń) i jądro spełnia warunki Mercera, to optymalizacja nie może się zakończyć. Ten przypadek opisano poniżej.
+
+\subsubsection{Heurystyka wyboru współczynników do optymalizacji}
+
+
+Wartość funkcji docelowej zmniejszy się w każdym kroku działania algorytmu SMO, jeżeli zostanie zoptymalizowana para współczynników Lagrange'a i co najmniej jeden z nich przed optymalizacją łamał warunki KKT. To gwarantuje zbieżność algorytmu, której uzyskanie można przyspieszyć stosując heurystykę do wyboru pary współczynników do jednoczesnej optymalizacji.
+
+
+Stosowane do tego są dwie różne heurystyki wyboru współczynników. Wybór pierwszego współczynnika gwarantuje zewnętrzna pętla algorytmu - iteruje po całym zbiorze uczącym sprawdzając które z przypadków naruszają warunki KKT. Jeżeli dana próbka nie spełnia tych warunków, może być optymalizowana. Po przejściu przez cały zbiór uczący, zewnętrzna pętla ponownie iteruje po wszystkich próbkach, dla których współczynniki Lagrange'a są różne od 0 i różne od $C$ (przypadki niegraniczne). Ponownie dla każdego z takich przypadków są sprawdzane warunki KKT i optymalizacji mogą podlegać te, które ich nie spełniają. Zewnętrzna pętla powtarza przejścia po wszystkich przypadkach niegranicznych dopóki wszystkie przypadki naruszające warunki KKT nie będą leżały w granicach błędu $\epsilon$. Następnie zewnętrzna pętla cofa się i ponownie iteruje po całym zbiorze uczącym. Pętla ta przełącza się między pojedynczymi przejściami po całym zbiorze uczącym i wielokrotnymi przejściami po podzbiorze niegranicznym do momentu, w którym cały zbiór spełnia warunki KKT w granicach $\epsilon$. W tym momencie algorytm kończy działanie.
+
+
+Heurystyka pierwszego wyboru skupia się na przypadkach, dla których prawdopodobieństwo złamania warunków KKT jest największe, czyli dla zbioru niegranicznego. Przypadki, które znajdują się na granicy, najprawdopodobniej na niej pozostaną, a te, które nie są na granicy, mogą się przesunąć. SMO optymalizuje więc najpierw podzbiór danych, a następnie przeszukuje cały zbiór w poszukiwaniu punktów, które mogły zacząć łamać warunki KKT w wyniki wcześniejszych zmian.
+
+
+Typowa wartość błędu $\epsilon$, dla którego warunki KKT są spełnione, to $10^{-3}$. Zmniejszenie wartości dopuszczalnego błędu może spowodować wydłużenie czasu potrzebnego na optymalizację, jednak jest to typowe dla wszystkich algorytmów stosowanych do nauki SVM.
+
+
+Po wyborze pierwszego współczynnika Lagrange'a, wybierany jest drugi współczynnik w taki sposób, aby zmaksymalizować wielkość kroku podczas optymalizacji pary. Obliczanie funkcji jądra $K$ jest czasochłonne, więc SMO przybliża wielkość kroku o wartość bezwzględną licznika w równaniu \ref{alfa2nowy}: $|E_1 - E_2|$. SMO zapisuje wartość błędu $E$ dla każdego przypadku niegranicznego w zbiorze uczącym i wybiera błąd tak, aby zmaksymalizować wielkość kroku. Jeżeli $E_1$ jest dodatnie, SMO wybierze przypadek z najmniejszą wartością błędu $E_2$. Jeżeli $E_1$ jest ujemne, SMO wybierze przypadek z największym błędem $E_2$.
+
+
+W wyjątkowych sytuacjach SMO nie może znaleźć odpowiedniego współczynnika przy wykorzystaniu opisanej heurystyki drugiego wyboru, np. w przypadku, gdy dwie próbki mają takie same wartości cech. W takim przypadku SMO stosuje hierarchię heurystyki drugiego wyboru aż znajdzie parę współczynników Lagrange'a, które mogą być optymalizowane. Warunkiem skutecznej optymalizacji jest wykonanie niezerowego kroku. Hierarchię w tym przypadku można przestawić następująco - jeżeli optymalizacja nie jest skuteczna, SMO iteruje po przypadkach niegranicznych, poszukując przypadku, który pozwoli na sukces. Jeżeli żaden z niegranicznych przypadków na to nie pozwala, SMO zaczyna iterować po całym zbiorze uczącym aż zostanie znaleziony przypadek pozwalający na skuteczną optymalizację. Iterowanie zarówno w przypadku podzbioru przypadków niegranicznych jak i całego zbioru rozpoczyna się od losowo wybranego elementu zbioru. Pozwala to uniknąć obciążenia SMO przez elementy znajdujące się na początku zbioru. W najgorszym przypadku żaden z pozostałych przypadków nie będzie się nadawał do optymalizacji. W takiej sytuacji dana próbka jest pomijana i SMO przechodzi do kolejnej wybranej próbki.
+
+
+\subsubsection{Obliczanie progu}
+
+
+Próg $b$ jest obliczany w każdym kroku, dzięki czemu warunki KKT są spełnione dla obu optymalizowanych próbek. Przedstawiony na równaniu próg $b_1$ jest prawidłowy, gdy nowy współczynnik $\alpha_1$ nie jest na granicy, ponieważ zmusza SVM, aby wyjściem było $y_1$ dla wejścia $x_1$:
+
+\begin{equation}
+b_1 = E_1 + y_1(\alpha^{nowy}_1 - \alpha_1)K(\overrightarrow{x_1},\overrightarrow{x_1}) + y_2(\alpha^{nowy}_2 - \alpha_2)K(\overrightarrow{x_1},\overrightarrow{x_2}) + b
+\end{equation}
+
+
+Opisany poniżej próg $b_2$ jest prawidłowy, gdy nowy współczynnik $\alpha_2$ nie leży na granicy, ponieważ zmusza SVM, aby wyjściem było $y_2$ dla wejścia $x_2$:
+
+\begin{equation}
+b_2 = E_2 + y_1(\alpha^{nowy}_1 - \alpha_1)K(\overrightarrow{x_1},\overrightarrow{x_2}) + y_2(\alpha^{nowy}_2 - \alpha_2)K(\overrightarrow{x_2},\overrightarrow{x_2}) + b
+\end{equation}
+
+Jeżeli oba progi $b_1$ i $b_2$ są prawidłowe, to są sobie równe. Gdy oba współczynniki Lagrange'a leżą na granicy i gdy $L$ nie jest równe $H$, wtedy odległością między $b_1$ i $b_2$ są wszystkie progi, które są zgodne z warunkami KKT. SMO wybiera wtedy próg leżący pośrodku między $b_1$ oraz $b_2$.
+
+\subsection{Opis sposobu implementacji algorytmu}
+
+\subsubsection{Schematy blokowe działania algorytmu}
+
+Sposób działania algorytmu przedstawiono za pomocą trzech schematów blokowych, które znajdują się poniżej:
+
+\begin{center}
+\includegraphics[scale=0.6]{mainloop}\\
+\captionof{figure}{ Schemat blokowy głównej pętli programu }
+\textit{(opracowanie własne)}
+\end{center}
+
+\begin{center}
+\includegraphics[scale=0.45]{examineExample}\\
+\captionof{figure}{ Schemat blokowy badania pojedynczej obserwacji }
+\textit{(opracowanie własne)}
+\end{center}
+
+\begin{center}
+\includegraphics[scale=0.6]{optimizePair}\\
+\captionof{figure}{ Schemat blokowy optymalizacji pary próbek }
+\textit{(opracowanie własne)}
+\end{center}
+
+\subsection{Wizualizacja działania algorytmu}
+W celu zobrazowania sposobu działania prototypu algorytmu opracowanego w środowisku MATLAB, dokonano wizualizacji wyznaczonej hiperpłaszczyzny. Dane należące do dwóch różnych kategorii zostały wylosowane przy pomocy funkcji $rand()$.
+\subsubsection{Wizualizacja dla dwóch cech}
+Na rysunku nr 4 przedstawiono dwa zbiory punktów należących do dwóch różnych klas, które zostały rozdzielone przy pomocy obliczonej hiperpłaszczyzny. W tym wypadku użyto dwóch cech, a przedstawione dane były liniowo separowalne. 
+\begin{figure}[h]
+\centering
+\includegraphics{visualize1}\\
+\caption{Rezultat działania algorytmu dla dwóch wymiarów cech i liniowo separowalnych danych }
+\textit{(opracowanie własne)}
+\end{figure}
+
+\newpage
+Na rysunku nr 5 przedstawiono dwa zbiory punktów należących do dwóch różnych klas, które zostały rozdzielone przy pomocy obliczonej hiperpłaszczyzny. W tym wypadku użyto dwóch cech, a przedstawione dane nie były liniowo separowalne. 
+\begin{figure}[h]
+\centering
+\includegraphics{visualize2}\\
+\caption{Rezultat działania algorytmu dla dwóch wymiarów cech i danych nieseperowalnych liniowo  }
+\textit{(opracowanie własne)}
+\end{figure}
+
+\subsubsection{Wizualizacja dla trzech cech}
+Na rysunku nr 6 przedstawiono dwa zbiory punktów należących do dwóch różnych klas, które zostały rozdzielone przy pomocy obliczonej hiperpłaszczyzny. W tym wypadku użyto trzech cech, a przedstawione dane  były liniowo separowalne. 
+
+\begin{figure}[h]
+\centering
+\includegraphics{visualize3}\\
+\caption{Rezultat działania algorytmu dla trzech wymiarów cech i liniowo separowalnych danych }
+\textit{(opracowanie własne)}
+\end{figure}
+
+Na rysunku nr 7 przedstawiono dwa zbiory punktów należących do dwóch różnych klas, które zostały rozdzielone przy pomocy obliczonej hiperpłaszczyzny. W tym wypadku użyto trzech cech, a przedstawione dane nie były liniowo separowalne. 
+
+\begin{figure}[h]
+\centering
+\includegraphics{visualize4}\\
+\caption{Rezultat działania algorytmu dla trzech wymiarów cech i danych nieseperowalnych liniowo }
+\textit{(opracowanie własne)}
+\end{figure}
+
+
+\subsection{Opis informatyczny procedur}
+
+
+\fbox{funkcja optimizePair:}\\
+\newline
+\textbf {void optimizePair(MatrixXd labelSet, MatrixXd gramMatrix, int pairFirst, int pairSecond, MatrixXd sampleError, MatrixXd \&lagrangeMultipliers, double const marginParameter, double \&bias, bool \&flagOptimizeSuccess)}\\
+\newline
+\vspace{3mm}Funkcja pozwala na optymalizację pary współczynników Lagrange'a.\\
+\vspace{3mm}Funkcja przyjmuje:\\
+labelSet - macierz typu MatrixXd z oznaczeniem cech\\
+gramMatrix - macierz typu MatrixXd reprezentującą macierz Gramma\\
+pairFirst - liczba typu int reprezentująca analizowany indeks \\
+pairSecond - liczba typu int reprezentująca analizowany indeks \\
+sampleError macierz typu MatrixXd zawierająca wartości błędu dla poszczególnych próbek\\
+marginParameter - parametr marginesu \\
+\newline
+\vspace{3mm}Funkcja przyjmuje w postaci referencji:\\
+lagrangeMultipliers - macierz typu MatrixXd ze współczynnikami Lagrange'a\\
+bias - liczba typu double oznaczająca przesunięcie granicy decyzyjności\\
+flagOptimizeSuccess - wartość logiczna typu bool reprezentująca powodzenie lub niepowdzenie optymalizacji\\
+\newline
+\newline
+\newline
+\fbox{funkcja examineSample:}\\
+\newline
+\textbf {void examineSample(int pairSecond, MatrixXd \&sampleError, MatrixXd \&lagrangeMultipliers, MatrixXd gramMatrix, MatrixXd labelSet, double \&bias, double const marginParameter, double const tolerance, bool \&flagExamineSuccess)}\\
+\newline
+\vspace{3mm}Funkcja pozwala na analizę danej próbki.\\
+\vspace{3mm}Funkcja przyjmuje:\\
+pairSecond - liczba typu int reprezentująca analizowany indeks \\
+gramMatrix - macierz typu MatrixXd reprezentującą macierz Gramma\\
+labelSet - macierz typu MatrixXd z oznaczeniem cech\\
+marginParameter - parametr marginesu \\
+tolerance - liczba typu double reprezentująca tolerancję\\
+\newline
+\vspace{3mm}Funkcja przyjmuje w postaci referencji:\\
+sampleError macierz typu MatrixXd zawierająca wartości błędu dla poszczególnych próbek\\
+lagrangeMultipliers - macierz typu MatrixXd ze współczynnikami Lagrange'a\\
+bias - liczba typu double oznaczająca przesunięcie granicy decyzyjności\\
+flagExamineSuccess - wartość logiczna typu bool reprezentująca powodzenie lub niepowdzenie analizy\\
+\newline
+\newline
+\newline
+\fbox{funkcja smosvm:}\\
+\newline
+\textbf {void smosvm(MatrixXd trainSet, MatrixXd labelSet, double const marginParameter, MatrixXd \&w, double \&bias, float \&trainingTime)}\\
+\newline
+\vspace{3mm}Funkcja pozwala na wyznaczenie optymalnej hiperpłaszczyzny rozdzielającej dwie klasy.\\
+\vspace{3mm}Funkcja przyjmuje:\\
+trainSet - macierz typu MatrixXd zawierającą cechy do trenowania algorytmu\\
+labelSet - macierz typu MatrixXd zawierającą oznaczenia cech\\
+marginParameter - parametr marginesu \\
+\newline
+\vspace{3mm}Funkcja przyjmuje w postaci referencji:\\
+w - macierz typu MatrixXd zawierającą współczynniki wyznaczonej hiperpłaszczyzny\\
+bias - liczba typu double oznaczająca przesunięcie granicy decyzyjności\\
+trainingTime - liczbę typu float reprezentującą czas trenowania\\
+\newline
+\newline
+\newline
+\fbox{funkcja loadData:}\\
+\newline
+\textbf {bool loadData(std::string filename, MatrixXd \&dataSet, MatrixXd \&labelSet)}\\
+\newline
+\vspace{3mm}Funkcja pozwala na wczytanie danych treningowych oraz danych testowych.\\
+\vspace{3mm}Funkcja przyjmuje:\\
+filename - string z nazwą pliku\\
+\newline
+\vspace{3mm}Funkcja przyjmuje w postaci referencji:\\
+dataSet - macierz typu MatrixXd z cechami które zostały wczytane\\
+labelSet - macierz typu MatrixXd z oznaczeniem cech\\
+\newline
+\vspace{3mm}Funkcja zwraca wartość logiczną typu bool reprezentującą powodzenie lub niepowodzenie procesu wczytywania pliku:\\
+\newline
+\newline
+\newline
+\fbox{funkcja svmclassify:}\\
+\newline
+\textbf {MatrixXd svmclassify(MatrixXd w, double bias, MatrixXd \&dataSet, float \&classificationTime)}\\
+\newline
+\vspace{3mm}Funkcja pozwala na klasyfikację zbioru testowego przy użyciu wcześniej obliczonych współczynników klasyfikatora.\\
+\newline
+\vspace{3mm}Funkcja przyjmuje:\\
+w - macierz typu MatrixXd zawierającą współczynniki wyznaczonej hiperpłaszczyzny\\
+bias - liczba typu double oznaczająca przesunięcie granicy decyzyjności\\
+\newline
+\vspace{3mm}Funkcja przyjmuje w postaci referencji:\\
+dataSet - macierz typu MatrixXd zawierające dane, które mają zostać sklasyfikowane\\
+classificationTime - liczba typu float reprezentująca czas klasyfikacji\\
+\newline
+\vspace{3mm}Funkcja zwraca macierz typu MatrixXd zawierającą wyniki klasyfikacji uzyskanej przez algorytm:\\
+\newline
+\newline
+\newline
+\fbox{funkcja checkAccuracy:}\\
+\newline
+\textbf {float checkAccuracy(MatrixXd const resultSet, MatrixXd const \&trueResultSet)}\\
+\newline
+\vspace{3mm}Funkcja pozwala na sprawdzenie skuteczności klasyfikacji algorytmu.\\
+\vspace{3mm}Funkcja przyjmuje:\\
+resultSet - macierz typu MatrixXd z wynikami klasyfikacji uzyskanymi przez algorytm \\
+\newline
+\vspace{3mm}Funkcja przyjmuje w postaci referencji:\\
+trueResultSet - macierz typu MatrixXd z poprawnymi wynikami klasyfikacji\\
+\newline
+\vspace{3mm}Funkcja zwraca liczbę typu float reprezentującą skuteczność klasyfikacji algorytmu:\\
+\newline
+\newline
+\newline
+\fbox{funkcja saveResult:}\\
+\newline
+\textbf {void saveResult(float const \&trainingTime, float const \&classificationTime, float const \&accuracy)}\\
+\newline
+\vspace{3mm}Funkcja pozwala na zapisywanie rezultatów treningu oraz klasyfikacji do pliku tekstowego "linear SVM results.txt".\\
+\newline
+\vspace{3mm}Funkcja przyjmuje w postaci referencji:\\
+trainingTime - czas, którego algorytm potrzebował na nauczenie klasyfikatora \\
+classificationTime - czas, którego algorytm potrzebował do klasyfikacji\\
+accurancy - skuteczność klasyfikacji algorytmu w \% \\
+\newline
+\newline
+\newline
+\fbox{funkcja getBiggerNumber:}\\
+\newline
+\textbf {double getBiggerNumber(double firstNumber, double secondNumber)}\\
+\newline
+\vspace{3mm}Funkcja pozwala na znalezienie liczby większej spośród dwóch liczb.\\
+\vspace{3mm}Funkcja przyjmuje:\\
+firstNumber - liczbę typu double\\
+secondNumber - liczbę typu double\\
+\newline
+\vspace{3mm}Funkcja zwraca większą z dwóch analizowanych liczb:\\
+\newline
+\newline
+\newline
+\fbox{funkcja getSmallerNumber:}\\
+\newline
+\textbf {double getSmallerNumber(double firstNumber, double secondNumber)}\\
+\newline
+\vspace{3mm}Funkcja pozwala na znalezienie liczby mniejszej spośród dwóch liczb.\\
+\vspace{3mm}Funkcja przyjmuje:\\
+firstNumber - liczbę typu double\\
+secondNumber - liczbę typu double\\
+\newline
+\vspace{3mm}Funkcja zwraca mniejszą z dwóch analizowanych liczb:\\
+\newline
+\newline
+\newline
+\fbox{ getNonboundSubset:}\\
+\newline
+\textbf {MatrixXd getNonboundSubset(MatrixXd lagrangeMultipliers, double marginParameter)}\\
+\newline
+\vspace{3mm}Funkcja przyjmuje:\\
+lagrangeMultipliers - macierz typu MatrixXd ze współczynnikami Lagrange'a\\
+marginParameter - liczba typu double z parametrem marginesu\\
+\newline
+\vspace{3mm}Funkcja zwraca macierz typu MatrixXd z indeksami elementów macierzy lagrangeMultipliers, których wartość jest różna od 0 lub różna od wartości zmiennej marginParameter\\
+\newline
+\newline
+\newline
+\fbox{funkcja randomizeIndexOrder:}\\
+\newline
+\textbf {void randomizeIndexOrder(MatrixXd dataSet, MatrixXd \&randomizedIndices)}\\
+\newline
+\vspace{3mm}Funkcja pozwala na losowe ustawienie indeksów.\\
+\vspace{3mm}Funkcja przyjmuje:\\
+dataSet - macierz typu MatrixXd z indeksami, które mają zostać zrandomizowane\\
+\newline
+\vspace{3mm}Funkcja przyjmuje w postaci referencji:\\
+randomizedIndices - macierz typu MatrixXd z indeksami, które zostały zrandomizowane\\
+\newline
+\newline
+\newline
+\fbox{funkcja random\_data\_generator:}\\
+\newline
+\textbf {void random\_data\_generator(MatrixXd \&trainSet, MatrixXd \&labelSet))}\\
+\newline
+\vspace{3mm}Funkcja pozwala na wylosowanie danych do testowania działania algorytmu.\\
+\vspace{3mm}Funkcja przyjmuje w postaci referencji:\\
+trainSet - macierz typu MatrixXd z cechami do trenowania\\
+labelSet - macierz typu MatrixXd z oznaczeniem klas\\
+\begin{thebibliography}{9}
+
+\bibitem{smomain} 
+Platt John
+\textit{Sequential Minimal Optimization: A Fast Algorithm for Training Support Vector Machines} 
+Microsoft Research, Technical Report MSR-TR-98-14, 1998
+
+\bibitem{ecgsvm} 
+de Chazal Philip 
+\textit{A Patient-Adapting Heartbeat Classifier Using ECG Morphology and Heartbeat Interval Features},
+IEEE Transactions On Biomedical Engineering, Vol. 53, No. 12, 2006
+
+\bibitem{stefanowski}
+Stefanowski Jerzy
+\textit{Metoda wektorów nośnych - slajdy dodatkowe do wykładu} 
+\\\texttt{http://www.cs.put.poznan.pl/jstefanowski/ml/SVM.pdf}
+Institute of Computing Sciences, Poznań University of Technology
+
+
+\bibitem{svmtutorial}
+SVM Tutorial
+\textit{Understending the math}, 
+\\\texttt{http://www.svm-tutorial.com/2014/11/svm-understanding-math-part-2/}
+
+\end{thebibliography}
+\newpage
+\section{Klasyfikator Bayesa}
+\subsection{Opis algorytmu}
+Działanie klasyfikatora Bayesa polega na przyporządkowaniu nowego przypadku do wcześniej zdefiniowanej klasy.  Podstawowym założeniem tego klasyfikatora jest niezależność każdej cechy występującej w klasie od reszty cech. Innymi słowy użyty klasyfikator bayesowski jest klasyfikatorem probabilistycznym z założeniem niezależności. Oznacza to, że obecność lub brak danej cechy nie łączy się z występowaniem jakiejkolwiek innej. Omawiany klasyfikator jest statystycznym klasyfikatorem opartym na twierdzeniu Bayesa.
+
+\vspace{0.5cm}
+Zakłada się, że dany obiekt $X$ jest reprezentowany przez zbiór cech, którego wartości należą do zbioru $X=(x_{1}, x_{2}, ..., x_{n})$. Reguła Bayesa mówi, że obiekt $X$ należy do klasy $C_{j}$, dla której wartość prawdopodobieństwa $P(C_{i}|X)$ jest największa. $P(C|X)$ to prawdopodobieństwo, że obiekt $X$ należy do klasy $C$. Aby oszacować prawdopodobieństwa a-posterori $P(C|X)$ należy skorzystać z twierdzenia Bayesa, które ma postać:
+
+\begin{equation}
+P(C|X) = P(X|C)P(C)/P(X)
+\end{equation}
+
+gdzie:
+
+$P(C)$ - prawdopodobieństwo a-priori wystąpienia klasy $C$ (czyli prawdopodobieństwo, że dowolny przykład należy do klasy $C$),
+
+$P(X|C)$ - prawdopodobieństwo a-posteriori, że obiekt $X$ należy do klasy~$C$,
+
+$P(X)$ - prawdopodobieństwo wystąpienia obiektu $X$.
+
+\vspace{0.5cm}
+Prawdopodobieństwo $P(X)$ jest dla wszystkich klas takie same, więc tak naprawdę klasa $C_{i}$, dla której wartość $P(C|X)$ jest największa to klasa dla której prawdopodobieństwo $P(X|C_{i})P(C_{i})$ jest największe. 
+
+\vspace{0.5cm}
+Wartość $P(C_{i})$ zastępuje się względną częstością klasy $C{i}$ lub można założyć, że wszystkie klasy mają takie same prawdopodobieństwo.
+ 
+ \vspace{0.5cm}
+Prawdopodobieństwo $P(X|C_{i}$P(X|Ci) to tak naprawdę iloczyn prawdopodobieństw kolejnych atrybutów:
+
+\begin{equation}
+P(X|C_{i}) = \prod_{j=1}^{n}P(x_{j}|C_{i})
+\end{equation}
+
+W przypadku wystąpienia ciągłego atrybutu prawdopodobieństwo $P(X_{j}|C_{i})$ należy estymować za pomocą funkcji gęstości prawdopodobieństwa przy założeniu normalnego rozkładu wartości atrybutów:
+
+
+\begin{equation}
+f(x) = \frac{1}{\sigma \sqrt{2\pi}}e^{-\frac{(x - \mu)^{2}}{2\sigma^{2}}}
+\end{equation}
+
+gdzie:
+
+$\mu$ - średnia danego atrybutu w klasie,
+
+$\sigma^{2}$ - wariancja atrybutu ~\cite{aa}.	
+
+\vspace{0.5cm}
+Naiwny model Bayesa jest łatwy do zbudowania oraz świetnie sprawdza się w przypadku bardzo dużej ilości danych. Dodatkowo zaletą tej metody jest to, że wymaga nie dużej ilości danych trenujących, aby uzyskać potrzebne parametry klasyfikujące.
+\subsection{Implementacja}
+Patrząc pod kątem implementacji można wyróżnić dwa procesy: ucznia klasyfikatora i testowania. 
+Proces uczenia będzie polegał na wyliczeniu odpowiednich parametrów. Są nimi częstość wystąpienia danej klasy $P(C_{i})$, średnia wartość cechy $\mu$ w zależności od klasy, oraz odchylenie standardowe wartości cechy $\sigma^{2}$. Rysunek 11 obrazuje proces uczenia klasyfikatora
+\begin{figure}[h]
+\centering
+\includegraphics[scale = 0.5]{Obrazy/uczenie_schemat}
+\caption{Schemat algorytmu uczenia klasyfikatora.}
+\label{fig:obrazek k}
+\end{figure}
+
+Kolejny etap algorytmu to już analiza danych, które mają zostać sklasyfikowane. Polega ona wyliczeniu dla każdej cechy funkcji gęstości prawdopodobieństwa, ponieważ wszystkie cechy które będą wchodziły w skład obiektu będą cechami ciągłymi. Funkcja ta obliczana jest dla każdej klasy. Następnie w celu otrzymania prawdopodobieństwa $P(X|C_{i})$P(X|Ci) otrzymane wartości wymnaża się. Obiekt zostanie zakwalifikowana do klasy, w której obliczone prawdopodobieństwo $P(X|C_{i})$ jest najwyższe.  Rysunek 12 przedstawia algorytm przypisana klasy do zestawu cech.
+\begin{figure}[h]
+\centering
+\includegraphics[scale = 0.6]{testowanie_schemat}
+\caption{Schemat algorytmu przypisania klasy do obiektu.}
+\label{fig:obrazek k}
+\end{figure}
+
+\subsection{Wykorzystanie klasyfikatora do rozpoznawania uderzeń serca}
+
+W celu wstępnego wyznaczenia skuteczności algorytmu, przeprowadzono klasyfikacje na uderzeniach serca pochodzących z sygnału 100.dat i 228.dat z bazy danych MIT - BIH. Rodzaje uderzeń znajdujące się w tych sygnałach postanowiono podzielić na 3 klasy: 
+\begin{itemize}
+\item uderzenia normalne oznaczone literką \textit{N},
+\item uderzenia komorowe oznaczone literą \textit{V},
+\item inne uderzenia wyróżnione w bazie MIT - BIH.
+\end{itemize}
+
+Zdecydowano się na taki podział ponieważ dwie pierwsze grupy stanowią ponad 90\% wszystkich uderzeń serca występujących w całej bazie MIT-BIH.
+
+\vspace{0.5cm}
+Cechy jakie zostały zdefiniowane dla każdego obiektu to, zaproponowane na podstawie artykułu~\cite{1}:
+\begin{itemize}
+\item Pre interval RR - odległość miedzy aktualnym uderzeniem serca(analizowanym), a poprzednim uderzeniem serca,
+\item Post inreval RR  - odległość między analizowanym uderzenie serca a kolejnym uderzeniem,
+\item Average RR - średnia długość interwału RR dla całego analizowanego sygnału,
+\item Ratio1 - stosunek pre RR interwal i post RR interval
+\item Ratio2 - stosunek per interwalu do Avarage RR 
+\end{itemize}
+
+Dane zostały podzielone na dwie grupy treningową i testową odpowiednio w stosunku 4:1. Ilość obiektów w obu grupach łącznie wynosiło 4322, w grupie testowej było 864 próbek, a w treningowej 3458. Wynik klasyfikacji z wykorzystaniem wszystkich pięciu wcześniej opisanych cech. prezentuje Tabela~1.
+
+\begin{table}[h]
+\centering
+\caption{Wynik klasyfikacji po zastosowaniu klasyfikatora Bayesa.}
+    \begin{tabular}
+{|l|c|c|c|}
+    \hline
+    ~              & Dobrze rozpoznane & Źle rozpoznane &  Dobrze rozpoznane/całość klasy \\ \hline
+    Uderzenia N    & 776                      & 8                          & 0,99                     \\ \hline
+    Uderzenia V    & 71                        & 1                          & 986                         \\ \hline
+    Inne uderzenia & 4                       & 4                           & 0,5                     \\ \hline
+    Suma           & 851                      & 13                          & 0,985                     \\ \hline
+    \end{tabular}
+\end{table}
+ 
+Postanowiono sprawdzić jaka będzie skuteczność klasyfikacji, jeżeli uwzględnionych zostanie mniej cech. Na przykład cechy Ratio1 i Ratio2 są powiązane z przednimi cechami, więc istnieje podejrzenie, że skuteczność klasyfikatora z pominięciem tych cech może być wyższa zgodnie z naiwnym założeniem twierdzenia Bayesa. Okazało się jednak, że najlepszą skuteczność jakią można było uzyskać z wykorzystaniem tych cechy była w momencie nie uwzględniania ostatniej cechy Ratio2. Wyniki jakie otrzymano korzystający tylko pierwszych 4 cech (post i pre interval RR,average RR i Ratio1) znajdują się w Tabeli~2. 
+
+\begin{table}[h]
+\centering
+\caption{Wynik klasyfikacji po zastosowaniu klasyfikatora Bayesa z wykorzystaniem 3 cech.}
+    \begin{tabular}
+{|l|c|c|c|}
+    \hline
+    ~              & Dobrze rozpoznane & Źle rozpoznane &  Dobrze rozpoznane/całość klasy \\ \hline
+    Uderzenia N    & 785                      & 0                          & 1                     \\ \hline
+    Uderzenia V    & 72                       & 0                           & 1                         \\ \hline
+    Inne uderzenia & 0                       & 7                           & 0 \\ \hline
+    Suma           & 857                      & 7                          & 0,992                   \\ \hline
+    \end{tabular}
+\end{table}
+
+Można zauważyć, że w momencie skorzystania z mniejszej liczby cech, skuteczność całego klasyfikatora wzrosła, jednak skuteczność w obrębie klas jest już bardzo różnorodna. Wszystkie uderzenia normalne i komorowe występujące w grupie testowej zostały właściwie rozpoznane, jednak żadne z innych uderzeń nie zostało poprawnie sklasyfikowane. Powodem może być duża różnorodność wartości w obrębie tej klasy. Natomiast korzystając z wszystkich wyznaczonych cech, skuteczność poprawnego zaklasyfikowania do innych uderzeń jest znacznie większa i wynosi 50\%. Jednak w obu przypadkach całkowita skuteczność rozpoznania utrzymuje się na wysokim poziomie.
+\subsection{Podsumowanie} 
+O skuteczności algorytmu nie decyduje ilość danych treningowych tylko ich reprezentatywność. 
+Klasyfikator Bayesa jest tak skonstruowany, że jednie czym można manipulować, aby polepszyć wyniki to zbiór treningowy - ilość i  rodzaj cech danego uderzenia, natomiast ilość danych w zbiorze treningowym nie jest już tak bardzo istotna. Klasyfikator jest bardzo prosty w implementacji, opiera się na odpowiednim wyliczeniu prawdopodobieństw. Klasyfikacja przebiega bardzo sprawnie. Używając nie dużych zbiorów treningowych można dostać zadowalające rezultaty. Nie występuje zależność im więcej cech zostanie uwzględnionych w klasyfikatorze tym będą lepsze rezultaty, najlepsze wyniki występowały w przypadku skorzystania z 4 cech. Może to być spowodowane, wzajemną korelacją kolejnych cech i założeniem klasyfikatora Bayesa mówiącym o wzajemnej niezależność cech.
+ 
+
+\begin{thebibliography}{99}
+\bibitem{aa} Wykład: Klasyfikacja, Naiwny klasyfikator Bayesa
+\\\texttt{http://wazniak.mimuw.edu.pl}
+\bibitem{1} K.M.~Senapati:
+\emph{Automatic Classification of Heartbeats Using ECG Morphology and Heartbeat Interval Features}, Electrical Engineering IIT, 2014
+\end{thebibliography}
+
+\newpage
+\section{k-Nearest Neighbours}
+\subsection{Założenia wstępne metody} 
+\begin{itemize}
+\item Dany jest zbiór uczący wraz z wektorem zmiennych objaśniających (cech) oraz wartością zmiennej objaśnianej
+\item Dany jest zbiór testowy wraz z wektorem zmiennych objaśniających (cech) dla którego prognozuje się wartość zmiennej objaśnianej
+\item Parametr k jest dobierany przed rozpoczęciem działania algorytmu
+\end{itemize}
+
+\subsection{Opis metody}
+Klasyfikator k-Najbliższych Sąsiadów to nieparametryczna metoda klasyfikacji oznaczana jako k-NN (\emph{k-Nearest Neighbours}). Algorytm kNN nie wykonuje procedury uczenia się klasyfikatora - po prostu zapamiętuje wszystkie próbki ze zbioru treningowego. Ideą metody jest klasyfikacja na bieżąco, czyli wtedy gdy pojawia się potrzeba analizy nowego przypadku. Celem metody jest poszukiwanie klasy, która jest najbliższa analizowanemu przypadkowi. W tym celu próbka testowa jest porównywana z wszystkimi próbkami ze zbioru treningowego. Istnieją różne miary odległości i podobieństwa pomiędzy przypadkowi i są one dobierane odpowiednio dla analizowanych danych. - w przypadku niniejszego projektu posłużono się \emph{odległością euklidesową}  ~\cite{doktorska}:
+
+\[ d(x,y) = \sqrt{\displaystyle\sum_{i=1}^{n} |x_{i} - y_{i}|^{2}} \]
+
+Parametr k jest dobierany przez rozpoczęciem działania algorytmu i opisuje ilość najbliższych sąsiadów jakie wyszuka algorytm. Spośród k-sąsiadów jako wynik klasyfikacji wybierana jest klasa najliczniej występująca klasa wśród najbliższych sąsiadów. Odległość od danych sąsiadów na tym etapie nie ma już znaczenia, chyba że liczba sąsiadów z poszczególnych klas będzie identyczna. Proces klasyfikacji obrazuje Rysunek 13.
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.6]{algorytm.png}
+\caption{Proces klasyfikowania zespołu QRS do danej klasy}
+\end{figure}
+
+Na jakość klasyfikacji ma wpływ liczba K uwzględnionych sąsiadów oraz rozkład w przestrzeni wielowymiarowej poprzednich próbek. Wybór odpowiedniej liczby sąsiadów K jest podstawowym zadaniem podczas projektowania klasyfikatora. Najczęściej jest to wartość dająca najlepsze rezultaty w fazie treningowej. Zbyt duża liczba K będzie powodowała wysoką złożoność obliczeniową, a zbyt mała sprawi, że klasyfikator nie będzie odporny na szumy. \\
+
+Zaletami tej metody jest prosty proces uczenia się i łatwość implementacji. Do wad można zaliczyć  proces klasyfikacji, który musi przeanalizować cały zbiór uczący, żeby obliczyć wszystkie odległości. Powoduje to, że klasyfikator ma dużą złożoność obliczeniową oraz dużą zajętość pamięci (przechowuje cały zbiór treningowy). Dodatkowo metoda ta jest wrażliwa na dane zaszumione lub błędne.
+
+\subsection{Klasy}
+Podczas implementacji prototypu w środowisku MATLAB w wektorach danych testowych i treningowych wyróżniono pięć klas, do których klasyfikowano zespoły QRS. Są to klasy  rekomendowane przez \emph{Association for the Advancement of Medical Instrumentation}: 
+\begin{itemize}
+\item \textbf{N} (\emph{normal}) - normalne, fizjologiczne uderzenie serca
+\item \textbf{S} (\emph{supraventricular}) - ektopowe pobudzenie nadkomorowe
+\item \textbf{V} (\emph{ventricular}) - ektopowe pobudzenie komorowe
+\item \textbf{F} (\emph{fusion}) - pobudzenie mieszane (jednoczesne pobudzenie komorowe i nadkomorowe)
+\item \textbf{Q} (\emph{unknown beat}) - nierozpoznane pobudzenie
+\end{itemize}
+
+\subsection{Implementacja prototypu algorytmu w środowisku MATLAB}
+W projekcie zaimplementowano funkcję obliczającą k-NN, która po otrzymaniu pojedynczej próbki zawierającej cechy sygnału EKG klasyfikuje ją do odpowiedniej klasy. Algorytm przetestowano na próbkach, których klasa jest znana, po to aby móc zweryfikować poprawność jego działania. Implementacji prototypu dokonano w środowisku MATLAB. \\
+
+Poniżej przedstawiono zaimplementowaną funkcję, która zrealizowana wykonana dla każdej próbki ze zbioru testowego:
+
+\begin{lstlisting}
+function [ out ] = knnClassification(testData, trainData, trainLabels, k)
+
+dist = pdist2(testData, trainData);
+  for i=1:k
+   [val(i),idx] = min(dist);
+   out(i) = trainLabels(idx);
+   dist(idx) = max(dist);
+  end
+end
+\end{lstlisting}
+
+\begin{thebibliography}{99}
+\bibitem{doktorska} Chmielnicki W., \emph{Efektywne metody selekcji cech i rozwiązywania problemu wieloklasowego w nadzorowanej klasyfikacji danych}, Instytut Podstawowych Problemów Techniki Polskiej Akademii Nauk, Kraków 2012
+\end{thebibliography}
+
+\section{Extended Nearest Neighbours} 
+\subsection{Ograniczenia metody k-NN}
+Algorytm k-NN jest szeroko wykorzystywany w wielu różnych dziedzinach. Został nawet zakwalifikowany na konferencji \emph{IEEE International Conference on Data Mining} do dziesięciu najlepszych algorytmów do zastosowań w obrębie \emph{data-mining}. Jednak zastosowanie tego algorytmu wymaga odpowiednio zdefiniowanego parametru k oraz odpowiednio dobranej miary obliczania niepodobieństwa. Ponadto próbki, które nie pasują do żadnej klasy lub są reprezentowane przez klasę o niższej częstości występowania w zbiorze uczącym zostaną \emph{zdominowane} przez klasy o najwyższej gęstości występowania. W takim przypadku liczba sąsiadów dla próbki z klasy drugiej może charakteryzować się większą ilością próbek z klasy pierwszej. Skłoniło to do poszukiwania rozwiązań, które umożliwiłyby jeszcze lepszą skuteczność omawianego algorytmu. Jednym z nich jest algorytm emph{extended nearest neighbour} ~\cite{knn}.
+
+\subsection{Opis metody eNN }
+
+Algorytm ENN (\emph{extended nearest neighbor}) wykorzystuje klasyfikator KNN do odnalezienia k-najbliższych sąsiadów próbki testowej w zbiorze treningowym. Nie wybiera jednak próbki na podstawie liczności sąsiadów z danej klasy, a na podstawie przypisanych do nich wag i wybiera tę klasę, dla której suma wag należących do niej sąsiadów jest największa. Dużą różnicą w stosunku do algorytmu kNN jest brak konieczności wyboru k - algorytm iteruje po wszystkich k od 1 do \(\sqrt(n)\), gdzie n to liczba próbek w zbiorze testowym. Pod uwagę brane są tylko nieparzyste wartości k. Nieparzysta wartość k pozwala uniknąć sytuacji, w której doszłoby do konfliktu oraz zmniejsza złożoność obliczeniową algorytmu, która ze względu na iteracje po k jest duża wyższa w porównaniu z kNN. Dodatkowo algorytm kNN nie tworzy żadnego modelu obliczeniowego - każda próbka testowa jest porównywana z całym zbiorem uczącym, co prowadzi do dłuższego czasu działania w porównaniu z innymi klasyfikatorami. ~\cite{enn} ~\cite{enn2}\\
+
+Waga i-sąsiada w zborze k-najbliższych sąsiadów:
+\[w(i) = \frac{1}{log_2(1+i)}\]
+
+Średnia ważona dla poszczególnej klasy jest obliczana w następujący sposób:
+\[WSc = \sum_{k=1}^{\sqrt{n}} \sum^{k}_{i=1} \left. \{\begin{array} {l} w(i), A_{i} = c \\ 0, otherwise  \end{array} \right .\]
+
+Następnie pod uwagę brana jest ta klasa, która występuje najczęściej:
+\[ class = argmax(c WSc)\]
+
+\subsection{Implementacja w środowisku MatLab}
+Danymi wejściowymi algorytmu są dane testowe oraz dane treningowe. Każdy zespół w ramach grupy posłużył się identycznymi danymi, aby wyniki można było porownać. Na początku znormalizowano dane, jednak i bez tej operacji algorytm działa poprawnie.\\
+
+Algorytm jest przygotowany tak, aby działał dla różnych zbiorów danych (z różną ilością klas oraz cech). Funkcja \emph{knnClassification} zwraca wektor k-najbliższych sąsiadów próbki testowej w kolejności od najbliższego do najdalszego sąsiada. Następnie dla każdego sąsiada obliczana jest jego waga. Wagi są sumowane w obrębie danej klasy. Wynikiem klasyfikacji jest ta klasa, której suma wag jest największa. Następnie, gdy zostanie obliczony rezultat dla każdej wartości k to spośród wektora klas wynikowych algorytm klasyfikuję próbkę testową do tej klasy, która występuje najczęściej.
+
+\begin{lstlisting}
+%enn classification for every test sample
+for testSample=1:length(testData)
+    result = [];
+    for k=1:2:sqrt(length(trainData))
+        predictedClasses = knnClassification(testData(testSample,:), trainData, trainLabels, k);
+        classes = unique(predictedClasses);
+        weights = zeros(length(classes),1);
+        for i=1:numel(predictedClasses)
+            weight = 1/log2(i+1);
+            index = find(classes == predictedClasses(i));
+            weights(index) = weights(index) + weight;
+        end
+        [val, idx] = max(weights);
+        result(size(result)+1) = classes(idx);
+    end
+    ennResult(testSample) = mode(result);
+end
+\end{lstlisting}
+
+Algorytmy ENN i KNN najpierw zaimplementowano w środowisku MatLab, a później w języku obiektowym C++ w standardzie C++11 używając środowiska programistycznego Eclipse. Podczas ostatecznej implementacji udoskonalono algorytmy, zarówno w C++ jak i w MatLabie.
+
+
+\subsection{Podsumowanie}
+Podczas testowania działania algorytmu zmierzono czas realizacji klasyfikacji oraz skuteczność właściwego klasyfikowania próbek wyrażoną w procentach. Na zastosowanym zbiorze testowym nie wykryto różnicy w skuteczności dla algorytmu KNN oraz ENN - oba klasyfikowały na poziomie 98\% oraz 99\%. Oczekiwanym rezultatem była większa skuteczność algorytmu ENN, ponieważ uwzględnia on dalsze sąsiedztwo (a co za tym idzie więcej przypadków). Jednak algorytm ten często jest stosowany dla większej ilości klas - na innym, przetestowanym zbiorze danych z bazy sygnałów biomedycznych PhysioNet wyniki algorytmu rzeczywiście przyniosły oczekiwane rezultaty. Do minusów metody kNN oraz eNN należy duża złożoność obliczeniowa - algorytm nie buduje modelu, a zapamiętuje cały zbiór danych treningowych i z nim porównuje każdą próbkę testową.
+
+\begin{thebibliography}{99}
+\bibitem{knn} Jayalalitha S. Susan D. et al., \emph{K-nearest Neighbour Method of Analysing the ECG Signal (To Find out the Different Disorders Related to Heart}, Journal of Applied Sciences 2014, p.1682-1632, 
+\bibitem{enn} Tang B., He H., \emph{Enn: Extended nearest neighbor Method for Pattern Recognition}, IEEE ComputatIonal Intelligence MagazIne 2015
+\bibitem{enn2} Alkasassbeh M., Altarawneh G. A. et al., \emph{On enhancing the performance of nearest neighbour classifiers using hassanat distance metric}, Canadian Journal of Pure and Applied Sciences 2015
+\end{thebibliography}
+
+\newpage
+\section {Radial Basis Function Kernel SVM}
+\subsection {Wstęp}
+Od wielu lat, tematyka automatycznej klasyfikacji elektrokardiogramu jest wnikliwie badana przez wiele zespołów. Wynika to z faktu, że pozwala uzyskać użyteczne informacje dotyczące rytmu oraz funkcjonowania serca. Analiza sygnału elektrokardiograficznego jest uważana za skuteczną metodę diagnostyczną w stanach chorobowych układu sercowonaczyniowego. 
+
+W ostatnich latach stosuje się coraz bardziej wyrafinowane metody klasyfikacji, do których zaliczają się m.in. która integrują w sobie elementy logiki rozmytej, sieci neuronowych, ukrytych modeli Markowa, transformacji falkowej oraz maszyny wektorów nośnych.
+
+Jednym z kluczowych aspektów projektu systemu automatycznej klasyfikacji jest właśnie dobór metody klasyfikacji. Metoda SVM jest warta uwagi, ponieważ oparta jest na maksymalizacji obszaru pomiędzy hiperpłaszczyznami rozdzielającymi dane z dwóch grup. Znalazła ona zastosowanie w dziedzinach rozpoznawania obiektów 3-D, obrazowania medycznego i kompresji obrazów. \cite{melgani}
+
+\subsection{Zarys proponowanego rozwiązania}
+
+Rozwiązanie stworzone w ramach projektu składa się z następujących elementów
+
+\begin{itemize}
+	\item{Pobranie sygnału EKG z bazy danych MIT-BIH Arrhythmia Database}
+	\item{Wstępne przetworzenie sygnału polegające na filtracji pasmowoprzepustowej oraz odjęciu linii izoelektrycznej}
+	\item{Wyznaczenie przybliżonych miejsc występowania zespołów QRS na podstawie pliku .atr dołączonego każdego z badań}
+	\item{Dla każdego z zespołów, które zostały sklasyfikowane jako normalny - N lub komorowy - V wyznaczenie cech sygnału}
+	\item{Stworzenie macierzy zawierającej w kolejnych wierszach zestawy cech dotyczącej każdego z zespołów QRS, w ostatniej kolumnie informacja o poprawnym przyporządkowaniu (wartość +1 dla N, wartość -1 dla V)}
+	\item{Stworzenie zbioru uczącego i testowego}
+	\item{Uczenie modelu maszyny wektorów nośnych przy użyciu algorytmu sequential minimal optimization}
+	\item{Walidacja modelu z użyciem zbioru testowego}
+\end{itemize}
+
+\subsection{Obliczenie cech kompleksów QRS}
+
+Podawanie do algorytmu uczącego całego sygnału bądź też interesujących fragmentów byłoby niepraktyczne z racji dużej złożoności obliczeniowej takiego rozwiązania. Znalezienie prostych do obliczenia cech zespołów QRS, które jednocześnie są w stanie pogrupować dane wejściowe według rodzaju ewolucji serca byłoby najbardziej korzystną sytuacją. \cite{august}
+
+\subsubsection{Matematyczny sposób obliczenia cech}
+Do analizy wybrano 5 prostych do obliczenia parametrów, do których obliczenia wykorzystuje się fragmenty sygnału uznane jako należące do zespołu QRS. \cite{p15}
+Te parametry to:
+
+\begin{itemize}
+	\item{Stosunek pola do obwodu (współczynnik Malinowskiej)
+	\begin{equation}
+	p_1 = \frac{\sum_{k=1}^{N} s[k]}{\sum_{k=2}^{N} s[k]-s[k-1]}
+	\end{equation}	}
+	\item{Wartość międzyszczytowa
+	\begin{equation}
+	p_2 = \frac{\max_{k \in <1,N>} s[k]}{\min_{k \in <1,N>} s[k]}
+	\end{equation}}
+	\item{Procent próbek sygnału, które są ujemne
+	\begin{equation}
+	p_3 = 100\% * \frac{\sum_{k=1}^{N} u[k]}{N}
+	\end{equation} }
+	Gdzie:
+	\[ u[k] =
+	\begin{cases}
+	1       & \quad \text{gdy } s[k] < 0\\
+	0	    & \quad \text{gdy } s[k] \geq 0\\
+	\end{cases}
+	\]
+	\item{Stosunek maksymalnej prędkości do maksymalnej amplitudy
+	\begin{equation}
+	p_4 = \frac{\max_{k \in <3,N>} s[k]-s[k-2]+2s[k-1]}{|\max_{k \in <1,N>} s[k] - \min_{k \in <1,N>} s[k]|}
+	\end{equation}}
+	\item{Stosunek liczby próbek sygnału, których prędkość przekracza 40\% maksymalnej prędkości obserwowanej w sygnale
+	\begin{equation}
+	p_5 = \frac{\sum_{k=1}^{N} g[k]}{N}
+	\end{equation}}
+	Gdzie:
+	\[ g[k] =
+	\begin{cases}
+	1       & \quad \text{gdy } |s[k]-s[k-1]| > 0.4 \max_{m \in <2,N>} |s[m]-s[m-1]|\\
+	0	    & \quad \text{gdy } |s[k]-s[k-1]| \leq 0.4 \max_{m \in <2,N>} |s[m]-s[m-1]|\\
+	\end{cases}
+	\]
+\end{itemize}
+\subsubsection{Klasyfikacja przy użyciu obliczonych cech}
+W celu wstępnej oceny wybranych cech, wybrano losowo 5 sygnałów z bazy danych (100.dat, 107.dat, 114.dat, 200.dat, 208.dat). Wyodrębiono z nich 9306 zespołów QRS, które sklasyfikowano jako normalne (N) bądź komorowe (V). Poniżej przedstawione są wykresy pudełkowe pokazujące zakres zmienności kolejnych cech dla obu grup.
+
+\begin{figure}[H]
+	\begin{center}
+===		\includegraphics[width=9cm]{p1.png}
+		\caption{Parametr $p_1$ dla obu grup}
+	\end{center}
+\end{figure}
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=9cm]{p2.png}
+		\caption{Parametr $p_2$ dla obu grup}
+	\end{center}
+\end{figure}
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=9cm]{p3.png}
+		\caption{Parametr $p_3$ dla obu grup}
+	\end{center}
+\end{figure}
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=9cm]{p4.png}
+		\caption{Parametr $p_4$ dla obu grup}
+	\end{center}
+\end{figure}
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=9cm]{p5.png}
+		\caption{Parametr $p_5$ dla obu grup}
+	\end{center}
+\end{figure}
+
+Jak można zauważyć niektóre cechy (przede wszystkim $p_2$ i $p_3$) dobrze dokonują rozróżnienia. W celu potwierdzenia tej obserwacji stworzono wykres obserwacji w przestrzeni $p_2$ - $p_3$.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=10cm]{p2p3.png}
+		\caption{Zbiór testowy na płaszczyźnie $p_2$-$p_3$}
+	\end{center}
+\end{figure}
+
+
+Pokazuje on, że klasyfikacja już w przestrzeni tych dwóch cech może dawać satysfakcjonujące rezultaty. Do algorytmu uczącego podano jednak macierz zawierającą wszystkie 5 cech zespołów QRS.
+\subsection{Metoda maszyny wektorów nośnych (SVM)}
+\subsubsection{Podstawowe założenia metody}
+Metoda wektorów nośnych dokonuje binarnej (na dwa pozbiory) klasyfikacji z nadzorem. Zbiór uczący składa się z $N$ wektorów
+\begin{equation}
+x_i \in R^d (i = 1, 2, 3...)
+\end{equation}
+z $d$-wymiarowej przestrzeni cech $X$. Z każdym wektorem stowarzyszona jest wartość
+\begin{equation}
+y_i \in \{-1, +1\}
+\end{equation}
+Metoda SVM w najprostszym (liniowym) wydaniu szuka hiperpłaszczyzny rozdzielającej dwie klasy w przestrzeni $X$ tak, aby hiperpłaszczyzna była najbardziej oddalona od obserwacji zbioru uczącego (maksymalny odstęp).
+
+W przypadku, gdy zbiory nie są liniowo separowalne, obie klasy są wcześniej mapowane do innej przestrzeni cech (o wyższej wymiarowości). Więcej o tym w kolejnym podrozdziale.
+
+Decyzja dotycząca klasyfikacji polega na obliczeniu wartości funkcji dyskryminacyjnej $f(x)$.
+\begin{equation}
+f(x) = \omega\text{*} \Phi(x) + b\text{*}
+\end{equation}
+Optymalna hiperpłaszczyzna jest zdefiniowana przez wektor wag
+\begin{equation}
+\omega\text{*} \in R^{d^\prime}
+\end{equation}
+i bias
+\begin{equation}
+b\text{*} \in R
+\end{equation}
+
+Optymalizacja klasyfikatora polega na minimalizacji błędu (tj. sumy kar za źle sklasyfikowane obserwacje) oraz maksymalizacji szerokości odległości między hiperpłaszczyzną rozdzielającą a obserwacjami. Przez odpowiedni dobór parametrów można większą wagę postawić na jedną z tych zależności.
+\subsubsection{Radial Basis Function}
+Radial Basis Function (lub radialna funkcja bazowa) jest funkcją zależącą jedynie od odległości od pewnego przyjętego środka. Każda funkcja spełniająca warunek
+\begin{equation}
+\phi(x) = \phi(||x||)
+\end{equation}
+jest funkcją radialną.
+
+Wprowadzenie radialnej funkcji bazowej związane jest z tym, że w wielu przypadkach niemożliwy jest skuteczny podział w wyjściowej przestrzeni cech. Funkcje bazowe usuwają tę przeszkodę przenosząc problem klasyfikacji do przestrzeni o wyższej wymiarowości, co schematycznie pokazuje poniższy rysunek.
+
+W algorytmie wykonanym w ramach projektu wykorzystano Gaussowską radialną funkcję bazową opisaną wzorem:
+
+\begin{equation}
+k(\vec{x}_i,\vec{x}_j) = exp(\frac{||\vec{x}_i-\vec{x}_j||^2}{2\sigma^2})
+\end{equation}
+\subsubsection{Matematyczne podstawy implementacji}
+
+Zastosowana metoda optymalizacji modelu SVM to Sequentual minimal optimization w skrócie SMO. Jest to metoda rozwiązywania zadania optymalizacyjnego polegającego na znalezieniu ekstremum funkcji kwadratowej. Przy implementacji oparto się na opisie z artykułu \cite{svmsmo}. 
+
+SMO jest efektywną metodą rozwiązania problemu optymalizacji, który może być opisany następującym równaniem
+
+\begin{equation}
+\max_{\alpha} W(\alpha) = \sum_{i=1}^{m}\alpha_i - \frac{1}{2}\sum_{i=1}^{m}\sum_{j=1}^{m}y^{i}y^{j}\alpha_i\alpha_j\langle x^{(i)},x^{(j)}\rangle
+\end{equation}
+Gdzie:
+\begin{equation}
+0\leq \alpha_i \leq C, \text{dla } i = 1, 2, 3, ..., m
+\end{equation}
+\begin{equation}
+	\sum_{i=1}^{m}y^{(i)}\alpha_i=0
+\end{equation}
+Warunek znalezienia optymalnego rozwiązania (zwany warunkiem Karusha-Kuhna-Tuckera) dla tego problemu jest zdefiniowany następująco
+\begin{equation}
+\alpha_i = 0 \implies y^{(i)}(\omega^{T}x^{(i)}+b)\geq1
+\end{equation}
+\begin{equation}
+\alpha_i = C \implies y^{(i)}(\omega^{T}x^{(i)}+b)\leq1
+\end{equation}
+\begin{equation}
+0 < \alpha_i < C \implies y^{(i)}(\omega^{T}x^{(i)}+b)= 1
+\end{equation}
+Algorytm SMO iteruje aż do momentu, gdy te warunki zostaną spełnione przez to zapewniając jego zbieżność do optymalnego rozwiązania.
+
+Składa się on 3 kroków \cite{svmsmo}:
+\begin{itemize}
+	\item Wybór parametrów $\alpha$
+	W zaimplementowanym algorytmie zastosowano najprostszy wybór parametrów, tj. w pętli iteruje się przez wszystkie $\alpha_i$, a następnie losuje się $\alpha_j$ takie, że $i \neq j$. Istnieje niewielkie prawdopodobieństwo, że któraś z par parametrów, które wprowadziłyby istotną zmianę do ostatecznego wyniku zostanie pominięta. Założono jednak, że algorytm musi wykonać przynajmniej 10 (domyślna wartość) "pustych przebiegów", aby zminimalizować takie prawdopodobieństwo. "Pusty przebieg" polega na tym, że w danej iteracji pętli zewnętrznej nie zostają wprowadzone żadne zmiany do modelu.
+	\item Optymalizacja $\alpha_i$ i $\alpha_j$
+	Obliczane są ograniczenia, które musi spełniać $\alpha_j$, a natępnie rozwiązywany jest ograniczony problem optymalizacyjny. Następnie obliczana jest $\alpha_j$ optymalna dla danego kroku, która jest następnie ogranicza jeśli posiada wartość spoza założonego zakresu. Na podstawie $\alpha_j$ obliczana jest nowa wartość $\alpha_i$. Odpowiednie wzory dostępne są \cite{svmsmo}.
+	\item Obliczenie biasu $b$
+	Po obliczeniu $\alpha_i$ i $\alpha_j$, wybierana jest taka wartość $b$, żeby warunek znalezienia optymalnego rozwiązania był spełniony. Sprawdzane jest, czy obliczone uprzednio $\alpha_i$ i $\alpha_j$ znajdują się na granicach przedziału $<0,C>$. Jeśli nie, to dane rozwiązanie jest prawidłowe. Jeśli oba nie są na granicach przedziału wartość $b$ jest średnią arytmetyczną $b_1$ i $b_2$ obliczoną odpowiednio dla $\alpha_i$ i $\alpha_j$. Szczegóły: \cite{svmsmo}.
+\end{itemize}
+\subsubsection{Implementacja w C++}
+
+W przygotowaniu programu w C++ wykorzystano bibliotekę Eigen, która okazała się szczególnie przydatna z racji wbudowanych funkcji obsługujących macierze i wektory. Najważniejsze elementy programu to:
+\begin{itemize}
+	\item Klasa SVM - jest to klasa obsługująca proces uczenia modelu (metoda train), a następnie jego testowania (metoda predict), posiada szereg funkcji prywatnych funkcji pomocniczych
+	\item Funkcja parseData - jest to funkcja odpowiadająca za wczytanie odpowiednio zdefiniowanego pliku CSV i stworzenie na jego podstawie struktury zawierającej 2 macierze (treningową, testową) i 2 wektory (poprawne przyporządkowanie dla zbioru treningowego i testowego)
+	\item Funkcje writeDecisionToCSV i appendToOutputFile - odpowiadające za zapis do plików działania modelu
+	\item Struktura SVMOptions - zawierający parametry działania metody maszyny wektorów nośnych oraz domyślny konstruktor przyjmujący wartości domyślne
+	\item Struktura ParsedData - zawierający całość danych potrzebnych do uczenia i testowania modelu
+\end{itemize}
+
+Funkcja główna main zawiera kod wywołujący poszczególne elementy programu:
+
+\begin{lstlisting}
+int main(int argc, char** argv){
+
+// wczytaj dane z plikow, ktorych nazwe podano w konsoli
+// - zalozono, ze pliki z danymi znajduja sie w tym samym
+// folderze co program
+
+ParsedData data = parseData(argv);
+
+// utworz model, podano domyslne parametry tj. C(1.0),
+// tol(0.0001), sigma(0.5), iterLimit(10000),
+// passLimit(10)
+
+SVM model(data.trainSet, data.trainSetOut, SVMOptions());
+
+// trenuj model na danych podanych w konstruktorze
+model.train();
+
+// dokonaj klasyfikacji danych podanych w pliku
+// testowym; zapisz wektor z klasyfikacja do pliku CSV o
+// nazwie out.csv
+
+VectorXd decision = model.massPredict(data.testSet);
+writeDecisionToCSV(decision);
+
+// ocen dzialanie klasyfikatora (ilosc poprawnie
+// sklasyfikowanych ewolucji serca N/V) oraz czas
+// uczenia i testow
+
+evaluateModel(data.testSetOut, decision);
+appendToOutputFile(model.trainTime, model.testTime);
+
+return 0;
+}
+\end{lstlisting}
+
+\subsection{Wyniki}
+Spośród ponad 9 tysięcy obserwacji do trenowania wybrano losowo 400 (322 zespoły QRS typu N, 76 zespoły typu V, jest to naturalna proporcja w jakiej występowały te zespoły w przebiegach 5 sygnałów, które wybrano losowo z bazy danych), a do testowania 100.
+
+Zbiór uczący pokazano poniżej, w płaszczyźnie $p_1$-$p_2$ (po lewej) i $p_2$-$p_4$ (po prawej).
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=11cm]{trening1.png}
+		\caption{Zbiór uczący na płaszczyźnie $p_1$-$p_2$ (po lewej) i $p_2$-$p_4$ (po prawej)}
+	\end{center}
+\end{figure}
+
+
+Poniżej zwizualizowano zbiór testowy (n/v) i treningowy (N/V) na jednym wykresie w tych samych płaszczyznach.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=11cm]{treningtest1.png}
+		\caption{Zbiór uczący i testowy na płaszczyźnie $p_1$-$p_2$ (po lewej) i $p_2$-$p_4$ (po prawej)}
+	\end{center}
+\end{figure}
+
+
+Zaimplementowana metoda klasyfikacji poprawnie przyporządkowała 99 spośród 100 obserwacji. Na wykresie porównawczym (po lewej poprawne przyporządkowanie, po prawej wynik działania algorytmu) oznaczono źle sklasyfikowaną obserwację.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=11cm]{testwynik.png}
+		\caption{Poprawnie sklasyfikowany zbiór uczący na płaszczyźnie $p_1$-$p_2$ (po lewej) i wynik działania algorytmu w tej samej płaszczyźnie (po prawej)}
+	\end{center}
+\end{figure}
+
+Porównanie działania algorytmu SVM RBF z algorytmami innych grup znajduje się w osobnym raporcie.
+
+\subsection{Wnioski}
+
+Klasyfikator zespołów QRS stworzony w ramach projektu działa satysfakcjonująco dla wybranych cech fragmentów sygnału i zaimplementowanego algorytmu SVM.
+
+W ramach projektu wykorzystano sprawdzone, ale proste matematycznie parametry sygnału i potwierdziły one swoją zdolność do rozróżniania zespołów QRS o różnym pochodzeniu pobudzenia. W ramach projektu porównywano zespoły sklasyfikowane jako normalne (N) oraz komorowe (V). Należy przyjąć, że gdyby dokonano bardziej szczegółówego podziału działanie klasyfikatora uległoby pogorszeniu. Już w początkowej fazie projektu stwierdzono, że bardzo ciężko byłoby odróżnić zespoły normalne (N) od nadkomorowych (SV) wg klasyfikacji. \cite{survey}
+
+Spośród wszystkich metod SVM realizowanych w projekcie metoda SVM RBF zapewnia najlepszą skuteczność rozdziału cech, która w przestrzeni, w której są zdefiniowane nie są liniowo separowalne, co stanowi niewątpliwą zaletę tego algorytmu. \cite{melgani}
+
+Czas trenowania klasyfikatora tj. ok. 20 sekund (na komputerze jednego z autorów) dla 400 obserwacji po 5 cech każda można uznać za zadowalający, ale z pewnością istnieje wiele metod dalszej optymalizacji kodu.
+
+\begin{thebibliography}{9}
+	
+	\bibitem{melgani}
+	Bazi Yakoub, Melgani Farid
+	\textit{Classification of Electrocardiogram Signals With Support Vector Machines and Particle Swarm Optimization} 
+	IEEE Transactions on Information Technology in Biomedicine 12, 2008
+	\bibitem{survey}
+	da Luza E. J. S, et al.
+	\textit{ECG-based Heartbeat Classification for Arrhytmia Detection: A Survey} 
+	Computer methods and programs in biomedicine, 2016
+	\bibitem{august}
+	Augustyniak Piotr
+	\textit{Przetwarzanie sygnałów elektrodiagnostycznych} 
+	Wydawnictwa AGH, Kraków, Poland, 2001
+	\bibitem{svmsmo}
+	Husanbir Singh Pannu
+	\textit{Simplified SMO Algorithm} 
+	\\\texttt{http://math.unt.edu/~hsp0009/smo.pdf}
+	\bibitem{p15} 
+	Augustyniak Piotr
+	\textit{Optymalizacja wyboru reprezentacji zespołów skurczowych dla celów klasyfikacji zapisów holterowskich} 
+	\\\texttt{http://galaxy.uci.agh.edu.pl/~august/pub/pdf/p15.pdf}
+	
+\end{thebibliography}
+\newpage
+
+
+\section{Liniowa Analiza Dyskryminacyjna}
+
+ Liniowa analiza dyskryminacyjna (ang. Linear Discriminant Analysis, LDA) należy do technik klasyfikacji z nadzorem – wykorzystuje zbiór uczący do stworzenia reguł (klasyfikatorów), które pozwalają na przypisanie nowego obiektu, o nieznanej przynależności, do którejś z klas. Klasyfikatory są liniowymi funkcjami dyskryminacyjnymi, których współczynniki dobrane są tak, by funkcje te jak najlepiej separowały od siebie obiekty zbioru uczącego należące do różnych klas. Reguły klasyfikacyjne dzielą zatem przestrzeń cech na podzbiory odpowiadające klasom (liczba podzbiorów równa jest liczbie klas). W przypadku, gdy liczba klas wynosi dwa, wystarczające jest wyznaczenie jednej funkcji dyskryminacyjnej. W celu przypisania nowego obiektu do klasy należy obliczyć wartość funkcji dyskryminacyjnej dla jego zmiennych. 
+\begin{equation}
+ F = a_0 + a_1x_1 + a_2x_2 + ... + a_nx_n
+ \end{equation}
+ gdzie:\\
+  \(a_0, a_1, a_2, ...,a_n\) - współczynniki funkcji dyskryminacyjnej\\ \(x_0, x_1, ...x_n\) - zmienne\\ \(n\) - liczba zmiennych\\
+  
+  \subsection{Wyznaczenie klasyfikatora}
+  
+Metoda LDA opiera się na tym, iż w każdym zbiorze danych (w każdej klasie) wyniki tworzą rozkład normalny. Na tej podstawie zakłada się, że model posiada taką samą macierz kowariancji dla obydwu klas. To, co je odróżnia, to średnia wartość oraz prawdopodobieństwo wystąpienia. W celu utworzenia liniowego klasyfikatora wykonano odpowiadające algorytmowi matematyczne operacje bazujące na ~\cite{1LDA} oraz ~\cite{2LDA}.
+
+Jako pierwsze zdefiniowano prawdopodobieństwo wystąpienia danej klasy w stosunku do wszystkich próbke na podstawie wzoru
+\begin{equation}
+ \pi=N_i/N_k
+\end{equation}
+gdzie:\\
+$N_i$ - liczba próbek klasy $i$ \\
+$N_k$ - liczba wszystkich próbek\\
+
+Następnie wyznaczono średnią wartość przyjmowaną przez ustalone cechy dla danej klasy. Zebrane średnie utworzyły wektor $\mu_i$, którego kolejne elementy odpowiadały wyznaczonym cechom. Kolejnym krokiem jest obliczenie macierzy kowariancji, która według założeń metody, jest jednakowa dla obydwu klas.
+\begin{equation}
+E=\sum^K_{k=1}\sum^N_{i=1} \frac{(x_i-\mu_k)(x_i-\mu_k)^T} {N-K}
+\end{equation}
+gdzie:\\
+$N$ - liczba próbek klasy $i$ \\
+$K$ - liczba klas\\
+$x_i$ - wartości cech dla kolejnych próbek $i$\\
+$\mu$ - wektor średnich wartości cech klasy $k$\\
+\\
+Wartości macierzy kowariancji, prawdopodobieństw oraz średnich posłużyły do wynaczenia wyrazu wolnego oraz współczynników funkcji dyskryminacyjnej.
+\begin{equation}
+a_0=log\frac{\pi_1}{\pi_2} - \frac{1}{2} (\mu_1+\mu_2)^T E^{-1}(\mu_1-\mu_2)
+\end{equation}
+\begin{equation}
+(a_1,a_2,...,a_n)^T=E^{-1}(\mu_1-\mu_2)
+\end{equation}
+ gdzie:\\
+$n$ - liczba cech \\.
+\\
+Uzyskawszy wartości współczynników możliwe było przeprowadzenie klasyfikacji nieznanego zbioru testowego. Dla kolejnych próbek wyznaczano ich wartości funkcji dyskryminacyjnej oraz przyrównywano do warunku $>0$ lub $<0$, co pozwoliło rozdzielić badany zbiór na dwie grupy.
+ 
+
+
+\subsection{Matlab - implementacja}
+
+Do wykonania modelu klasyfikacji użyto 7 sygnałów z bazy MIT-BIH Artythmia Database, które były już odpowiednio przetworzone i pozwoliły na utworzenie wektorów próbek dla załamków R, a następnie zespołów QRS, którym przyporządkowane były zdefiniowane klasy. Próbki dla Q oraz S zostały oszacowane na podstawie typowego czasu trwania całego zespołu, który w celu zapewnienia detekcji został zawyżony. Różnicę pomiędzy Q a R ustalono o wartości 63 ms, a R -- S: 94 ms. Aby stworzyć macierze klas zawierające załamki jednej klasy, lecz pochodzące z różnych sygnałów, napisano funkcję, która grupowała te dane. Dla grup zespołów QRS obliczono cechy charakterystyczne. Tak utworzone wektory cech poddano Liniowej Analizie Dyskryminacyjnej, której celem było uzyskanie odpowiedniego klasyfikatora. Model przetestowano i oceniono na przygotowanym zbiorze testowym.\\
+
+Tabela 3 przedstawia uzyskane rezultaty klasyfikacji zespołów QRS metodą LDA w założeniu prototypowym. Przyjęta koncepcja rozwiązania zaowocowała poprawną klasyfikacją 540 obserwacji spośród 600, co daje wynik 90\% poprawnej klasyfikacji. 
+
+\begin{table}[h]
+\centering
+\caption{Zestawienie wyników klasyfikacji metodą LDA w środowisku Matlab}
+\label{my-label}
+\begin{tabular}{c|c|c}
+Real/Predicted & N       & VEB     \\ \hline
+N              & 92,33\% & 7,67\%  \\ \hline
+VEB            & 12,33\% & 87,67\%
+\end{tabular}
+\end{table}
+
+\subsection{C++ - implementacja}
+Implementacja opisanego w przedostatnim rozdziale rozwiązania została wykonana w języku C++. Oprócz przedstwionych wcześniej matematycznych operacji wczytano przygotowane dane oraz odpowiednio je przygotowano. Algorytm rozwiązania został zaprezentowany na schemacie  (Rys. 23).
+\begin{figure}
+	\begin{center}
+			\includegraphics[width=5cm]{LDA_schemat.pdf}
+		\caption{Schemat zaimplementowanego algorytmu LDA}
+	\end{center}
+\end{figure}
+
+
+\subsection{Podsumowanie}
+Algorytm liniowej analizy dyskryminacyjnej zaimplementowany w C++ dał podobne wyniki jak analiza przeprowadzona z wykorzystaniem środowiska Matlab. Skuteczność klasyfikacji na poziomie >90\% można określić jako dobrą. Przy manualnej analizie oceniono, że klasę przeważającą w liczebności, algorytm klasyfikował z większą poprawnością. LDA można określić jako metodę optymalną do zastosowań w przypadku dwóch klas, ponieważ działa szybko i z zadowalającym wynikiem. 
+
+W celu wykonania algorytmu oraz analizy w programie Matlab wykorzystano publikację wymienione w poniższej bibliografii.
+
+\begin{thebibliography}{9}
+\bibitem{1LDA}
+Jia Li
+\textit{Linear Discriminant Analysis}, Department of Statistics
+The Pennsylvania State University
+\\\texttt {http://sites.stat.psu.edu/~jiali/course/stat597e/notes2/lda.pdf}
+dostęp 12/01/2017
+\bibitem{2LDA}
+Mathworks
+\textit{Discriminant Analysis}
+\\\texttt {https://www.mathworks.com/help/stats/discriminant-analysis.html}
+dostęp 12/01/2017
+\bibitem{3}
+Augustyniak Piotr
+\textit{Przetwarzanie sygnałów elektrodiagnostycznych} 
+Wydawnictwa AGH, Kraków, Poland, 2001
+
+\end{thebibliography}
+
+\newpage
+\section{QSVM}
+SVM (ang. support vector machine), czyli maszyna wektorów nośnych
+(wspierających), zaliczana jest do technik nadzorowanych, które analizują dane i rozpoznają
+ich wzorce. Ogólnym celem SVM jest określenie przynależności danego zbioru danych do
+jednej z dwóch klas przez wyznaczenie granicy między dwoma zbiorami z największym
+możliwym marginesem.
+
+\begin{figure}[h]
+\centering
+\includegraphics{SVM}\\
+\caption{SVM}
+\end{figure}
+
+Do stworzenia takiej hiperpłaszczyzny brane są pod uwagę tylko niektóre wektory
+treningowe, czyli wektory nośne, inaczej wektory podtrzymujące (ang. support vectors),
+określające optymalny margines separacji.
+
+\subsection{Quadratic SVM (ang. quadratic kernel-free non-linear support vector machine)}
+
+Kwadratowa funkcja decyzyjna jest zdolna do rozdzielenia danych nieliniowych. 
+Margines geometryczny jest równy odwrotności gradientu funkcji decyzyjnej.
+Margines funkcjonalny jest równaniem funkcji kwadratowej.
+\subsubsection{Kernel}
+Klasy $y=\pm 1$ są kojarzone z wzorami x poprzez transformację wzorów do wektora cech $\Phi(x)$
+\newline
+$\widehat{y}(x) = w*\Phi+b$ 
+\newline
+Parametry w i b są wybierane na podstawie uruchomienia algorytmu na zestawie danych uczących $(x_1,x_2)....(x_i,x_j)$
+\newline 
+Paramter $\Phi$ jest dobierany indywidualnie do każdego przypadku
+\newline
+$w = \sum_{i=1}^{n}\alpha_i*\Phi_i $
+\newline
+$\widehat{y}(x) =  \sum_{i=1}^{n}\alpha_i*K(x,x_i)+b$
+\newline
+Funkcja Kernel K(x,y) rezprezentuje iloczyn skalarny $\Phi(x)'\Phi(y) $. To wyrażenie jest przydatne zwłaszcza wtedy, gdy duża wartość współczynników $\alpha_i$ jest równa 0. Wówczas te współczynniki, które są rózne od zera nazywane są wektorami wspierającymi. 
+
+\subsubsection{Quadratic Programming}
+QP opisuje problem optymalizacji (min lub max) kwadratową funkcją wielu zmiennych podlegających liniowym ograniczeniom. Wypukłość funkcji jest wykorzystywana do optymalizacji, ponieważ ma tylko jedno optimum, które jest globalnym optimum. 
+
+
+
+$QSVM (W,b,c)$
+$f(X)=\frac{1}{2}*X^T*W*X+b^T+c$
+$f(X)=ct$ może przyjąć wszystkie formy hiperpłaszczyzny (hiper-elipsy, hiper-parabole..)
+f(X) może być rozważana jako suma $fliniowe$ + $fnieliniowa$
+
+\begin{figure}[h]
+\centering
+\includegraphics{3.png}\\
+\caption{SMO}
+\end{figure}
+\subsubsection{SMO}
+Minimalna optymalizacja sekwencyjna SMO dekomponuje problem SVM na podproblemy, które są rozwiązywane analitycznie, lecz podproblemy są tylko dwuparametrowe. 
+\subsubsection{Opis ogólny procedury}
+Dekompozycja – wyróżnenie 2 podzbiorów parametrów: zbiór aktywny i zbiór pasywny. W każdym kroku iteracyjnym jedynie parametry aktywne są optymalizowane. Ogólną regułą algorytmów opierających się na dekompozycji jest taka optymalizacja zbioru aktywnego, by aktualne rozwiązanie było jak najbliższe maksimum globalnemu. 
+Sposób wyboru aktywnego zbioru parametrów opiera się na heurystykach.
+\newline
+\newline
+Kroki jakię są wykonywane w heurestyce
+\begin{enumerate}
+\item Wybór podzbioru parametrów aktywnych. 
+\item Wyznaczenie rozwiązania optymalnego dla wybranych parametrów.
+\item Utworzenie nowego zbioru parametrów aktywnych który składa się z
+\begin{itemize}
+\item Wszystkich wektorów wspierających otrzymanych w poprzednim rozwiązaniu
+\item M wektorów ze zbioru pasywnego spełniającego najgorzej kryterium KKT (M – parametr systemu). 
+\end{itemize}
+\item W momencie spełnienia kryterium stop proces iteracyjny zostaje zatrzymany. 
+\end{enumerate}
+
+Gdy C równie jest nieskończoność wówczas mamy do czynienia z idealną separacją – pomiędzy hiperpłaszczyznami nie znajdują się zadane punkty. 
+Gdy $\alpha_{i} > 0 $ to i-ty wektor jest wektorem wspierającym.
+Gdy $\alpha_{i} = 0 $ to i-ty wektor może być wektorem wspierającym.
+\newline
+Algorytm SMO poszukuje w takim kierunku, w którym wszystkie współczynnki $\alpha$ są równe z 0 z wyjątkiem dla dwóch pojedynczych wartości 1 i -1. 
+
+\subsubsection{Rozwiązanie analityczne dla dwóch punktów}
+\begin{enumerate}
+\item Dwoma wybranymi parametrami do zbioru aktywnego są parametry $\alpha_1$ i $ \alpha_2$. Kolejne kroki w algorytmie zaproponowanych przez Platta są następujące:
+\begin{itemize}
+\item $\alpha_1$ wybierany jest spośrod wszytkich paratemtrów, które nie spełniają KKT (warunki konieczne I rzędu), przy czym pierwszęnstwo mają $\alpha_1$ spełniające $ 0 < \alpha_{1} < C $. Parametr $\alpha_1$ jest to mnożnik Lagrange'a. 
+\item $\alpha_2$ (drugi mnożnik Lagrange'a) musi spełniać warunek. 
+\item SMO optymalizuje parę ($\alpha_1$, $\alpha_2$) i powtarza to, aż do momentu zbieżności. 
+\end{itemize}
+\item Wejściowe parametry spełniają warunek równościowy (są równe 0)
+
+
+$ \sum_{i=1}^{l}(\alpha_{i}^{old})*y_{i}$
+ 
+$\alpha_{1}^{old}*y_{1} + \alpha_{2}^{old}*y_{2} + \sum_{i=3}^{l}(\alpha_{i}^{old})*y_{i} = 0 $
+
+\item Nowe wartości parametrów również muszą spełniać warunek nierównościowy
+$\alpha_{1}*y_{1} + \alpha_{2}*y_{2} = \alpha_{1}^{old}*y_{1} + \alpha_{2}^{old}*y_{2} $
+
+Po przekształceniu
+$\alpha_{2} = \alpha_{1}^{old}*y_{1}*y_{2} + \alpha_{1}^{old} - \alpha_{1}*y_{1}*y_{2} $
+
+Prosta przecina lewy bok kwadratu gdy $\alpha_{1} = 0 $
+\newline Prosta przecina prawy bok kwadratu gdy $\alpha_{1} = C $
+
+\begin{figure}[h]
+\centering
+\includegraphics{1.png}\\
+\caption{Rysunek przedstawia prostą p w przypadku a)o współczynniku ujemnym, w przypadku b) dodatnim.}
+\end{figure}
+
+Po podstawieniu otrzymuje się (gdy współczynnik kierunkowy jest ujemny (Rysunek 3. a))
+\newline 
+$\alpha_{2} = \alpha_{1}^{old} + \alpha_{2}^{old}$
+$\alpha_{2} = \alpha_{1}^{old} + \alpha_{2}^{old}-C$
+\newline Gdy współczynnik kierunkowy jest dodatni (Rysunek 3. b))
+\newline
+$\alpha_{2} = -\alpha_{1}^{old} + \alpha_{2}^{old}$
+$\alpha_{2} = \alpha_{1}^{old} + \alpha_{2}^{old}-C$
+\newline Należy pamiętać, że punkty przecięcia muszą leżeć w obrębie kwadratu. 
+
+\item Nowe wartości parametrów muszą również spełniać warunek nierównościowy
+$0\ge\alpha_{1}$ ,
+$C\ge\alpha_{2}$
+\item Po wykonaniu i obliczeniu parametrów  $\alpha$ ważne jest by odpowiednio ograniczyć wyniki
+\newline 
+Dla ułatwienia zostanie wprowadzony parametr $s=y_{1}*y_{2}$ oraz y=1 lub y=-1 
+\newline 
+$y_{1}*\alpha_{1} + y_{1}*\alpha_{1} = constant = \alpha_{1} + s*\alpha_{2}$
+\newline
+$\alpha_{1} = \gamma - s*\alpha_{2}$
+
+Dla przypadku $s=1$   
+ \newline $\alpha_{1}+\alpha_{2} = \gamma$
+ \begin{itemize}
+\item $\gamma > C $ max $\alpha_{2} = C $, min $ \alpha_{2} = \gamma - C$
+\item $\gamma < C$  max $\alpha_{2} = 0$ ,min  $\alpha_{2} = \gamma$
+\end{itemize}
+Dla przypadku $s=-1$
+\newline $\alpha_{1}-\alpha_{2} = \gamma$
+\begin{itemize}
+\item $\gamma > 0$ min $\alpha_{2} = 0 $ ,max  $\alpha_{2} = C -\gamma $
+\item $\gamma < 0$ min $\alpha_{2} = -\gamma$ ,max  $\alpha_{2} = C$
+\end{itemize}
+W momencie gdy  $y_{1}\neq y_{2}$ 
+\begin{itemize}
+ \item$ U = max(0,\alpha_{2}^{old} - \alpha_{1}^{old})$
+ \item$ V = max(C,C - \alpha_{1}^{old} + \alpha_{2}^{old})$
+ \end{itemize}
+
+
+ 
+W momencie gdy $y_{1}=y_{2}$
+\begin{itemize}
+\item$ U = max(0,\alpha_{2}^{old} + \alpha_{1}^{old} - C)$
+ \item $ V = max(C, \alpha_{1}^{old} + \alpha_{2}^{old})$
+ 
+\end{itemize}
+\item Wyliczenie $E_i$ Jest to błąd, który pojawia się w momencie gdy chce się zobaczyć różnice między wyjściem a celem
+
+$ E_i = \sum_{j=1}^{l}(\alpha_{i})*y_{j}*K(x_j,x_i)-y_i$
+
+\item Wyliczenie $k_ij$
+
+$\kappa = K(x_1,x_2) + K(x_2,x_2) - 2*K(x_1,x_2)$
+
+\item Wyliczenie nowych parametrow $\alpha$ \newline
+$\alpha_{2}^{unc} = \alpha_{2}^{old} + \frac{y_2*(E_1-E_2)}{\kappa}$
+\newline
+$\alpha_{2}$= 
+\begin{itemize}
+\item $V$, jesli $\alpha_{2}^{new}{unc}>V$;
+\item $\alpha_{2}^{new}{unc}$, jeśli $U\ge\alpha_{2}^{new}{unc}\ge V$;
+\item $U$, jeśli $U<\alpha_{2}^{new}{unc}$;
+\newline
+\end{itemize}
+$\alpha_{new} = \alpha_{old} + y_{1}*y_{1}(\alpha_{old}-\alpha_{new})$
+\newpage
+\subsection{Implementacja rozwiązania C++}
+\subsubsection{Zaproponowane rozwiązanie}
+Patrząc pod kątem implementacji maszyny wektorów nośnych z jądrem kwadratowym metodą SMO, należy wyróżnić dwa etapy klasyfikatora : uczenie oraz predykcję/klasyfikację. W głównym programie pierwsze tworzony jest obiekt klasyfikatora QSVM, następnie jest on uczony przez wywołanie metody train(), a dopiero później następuje predykcja na próbkach testowych ( poniższy pseudokod).\\ 
+
+\begin{tabular}{|p{11.5cm}|} \hline\noindent \#include "svm\_additional\_fnc.h"
+
+\noindent \#include "svm\_classifier.h"
+
+\noindent 
+
+\noindent using std::cerr;
+
+\noindent using std::endl;
+
+\noindent // g{\l}\'{o}wna funkcja main
+
+\noindent int main()
+
+\noindent $\{$
+
+ SVMClassifier *our\_classifier = new SVMClassifier();  // tworzenie nowego obiektu klasy SVMClassifier 
+
+\noindent 
+
+ clock\_t begin = clock();  // zapisanie czasu rozpocz\k{e}cia treningu w zmiennej begin typy clock\_t
+
+ our\_classifier-$>$train(); // wywo{\l}anie metody train na obiekcie
+
+ clock\_t train = clock(); //zapisanie czasu ko\'{n}ca treningu w zmiennej train typu clock\_t
+
+ our\_classifier-$>$predict();// wywo{\l}anie metody predict na obiekcie
+
+ clock\_t predict = clock(); //zapisanie czasu ko\'{n}ca predykcji do zmiennej predict typy clock\_t
+
+ std::cout $<$$<$ "Train time:{\textbackslash}t" $<$$<$ (double(train - begin) / CLOCKS\_PER\_SEC) $<$$<$ endl;
+
+ std::cout $<$$<$ "Predict time:{\textbackslash}t" $<$$<$ (double(predict - train) / CLOCKS\_PER\_SEC) $<$$<$ endl;
+
+ std::cout $<$$<$ "Total time:{\textbackslash}t" $<$$<$ (double(predict - begin) / CLOCKS\_PER\_SEC) $<$$<$ endl;
+
+ int wait;
+
+ std::cin $>$$>$ wait; // zamkni\k{e}cie przez wpisanie liczby
+
+\noindent 
+
+\noindent $\}$
+\\\\ \hline
+\end{tabular}
+\\
+Pierwsze w funkcji main wywoływana jest funkcja train. Poniżej przedstawiony jest pseudokod funkcji train().\\
+\begin{tabular}{|p{11.5cm}|} \hline
+\noindent \textbf{Pseudokod funkcja train():}
+
+ numChangedAlpha = 0;
+
+ prevNumChangedAlpha = 0;
+
+ examineAll = 1;
+
+ rounds = 0;
+
+ sameRounds = 0;
+
+\noindent \textbf{while} numChangedAlpha większe od 0 lub examineAll równe True, oraz rounds $<$ maksymalnej liczby iteracji, oraz sameRounds $<$ maksymalnej liczby iteracji z tym samym błędem
+
+ \hspace{1em}do 
+
+  \hspace{2em}inkrementacja rounds;
+
+  \hspace{2em}\textbf{if} examineAll równa się true to
+
+   \hspace{3em}for dla ka\.{z}dej próbki treningowej
+
+    \hspace{4em}numChangedAlpha += examineExample(k);
+
+  \hspace{2em}\textbf{else}
+
+   \hspace{3em}for pętla dla każdej próbki gdzie alpha nie jest równa 0 oraz nie jest równa C
+
+   \hspace{4em}numChangedAlpha += examineExample(k);
+
+  \hspace{2em}\textbf{if} examineAll równa si\k{e} 1
+
+   \hspace{3em}examineAll równe 0
+
+  \hspace{2em}\textbf{else if} numChangedAlpha równe 0 
+
+   \hspace{3em}examineAll równe 1
+\\ \hline
+\end{tabular}
+ \\ W funkcji train() w każdej iteracji wywoływana jest funkcja examineExample.
+
+ 
+\newpage
+\noindent 
+\noindent \textbf{Pseudokod ExamineExample(i1):}\\
+\begin{tabular}{|p{11.5cm}|} \hline
+\noindent definicja zmiennych y1, alpha1, e1, r1, typu float jako 0.0,
+
+\noindent y1 -$>$ warto\'{s}\'{c} etykiety klasy o indeksie i1 z arrayY[]
+
+\noindent alpha1 -$>$ mnożnik Lagrange'a o indeksie i1 z alpha[]
+
+\noindent 
+
+\noindent \textbf{if} alpha[i1] zawiera się w zakresie (0,C)
+
+ \hspace{1em}e1 -$>$ wartość o indeksie i1 z wektora arrayError
+
+\noindent \textbf{else}
+
+ \hspace{1em}e1 -$>$ wartość wyjściowa SVM dla punktu i1 - y1
+
+\noindent r1 -$>$ e1 * y1
+
+\noindent \textbf{if} (r1 mniejsze od -TOLERANCE oraz alpha[i1] mniejsza od C) lub (r1 większe od TOLERANCE oraz alpha2$>$0)
+
+ \hspace{1em}for pętla przechodząca N razy
+
+  \hspace{2em}\textbf{if} kolejny mnożnik zawiera się w zakresie (0,C)
+
+   \hspace{3em}szukanie maksymalnej wartości bezwzględnej (e1-e2), i2 -k,
+
+  \hspace{2em}\textbf{if} i2 większe lub równe 0
+
+   \hspace{3em}\textbf{if} wywołanie funkcji takeStep dla i1, i2 zwróci 1
+
+    \hspace{4em}return 1
+
+ \hspace{1em}\textbf{for} pętla przez punkty niebrzegowe zaczynając od dowolnej liczby k0
+
+  \hspace{2em}poprzednio wyznaczone i2 zmieniamy na k0 \% N
+
+  \hspace{2em}\textbf{if} mnożnik[i2] zawiera się w zakresie (0,C)
+
+   \hspace{3em}\textbf{if} wywołanie funkcji takeStep dla i1 oraz i2 zwróci 1
+
+    \hspace{4em}return 1
+
+ \hspace{1em}for pętla przez wszytskie możliwe punkty i2, zaczynając w losowym punkcie
+
+  \hspace{2em}i2 -$>$ zmienna p\k{e}tli
+
+   \hspace{3em}\textbf{if} wywołanie funkcji takeStep dla i1 oraz i2 zwróci 1
+
+    \hspace{4em}return 1
+
+\noindent 
+\\ \hline
+\end{tabular}
+\newline
+\noindent \textbf{Poniżej przedstawiono pseudokod takeStep(i1,i2):}\\
+\begin{tabular}{|p{11.5cm}|} \hline
+\noindent \textbf{if} i1 równe i2 
+ 
+ \hspace{1em}\textbf {return} 0\\
+ alpha1 -$>$ alpha[i1]
+
+\noindent alpha2 -$>$ alpha[i2]
+
+\noindent y1 -$>$ arrayY[i1]
+
+\noindent y2 -$>$ arrayY[i2]
+
+\noindent e1 -$>$ wynik SVM dla punktu[i1] - y1
+
+\noindent e1 -$>$ wynik SVM dla punktu[i2] - y2
+
+\noindent s -$>$ y1 * y2;
+
+\noindent L -$>$ 0.0;
+
+\noindent H -$>$ 0.0;
+
+\noindent \textbf{if }y1 == y2
+
+\hspace{1em} L -$>$ maksimum w zakresie (0, alpha1 +alpha2 - C)
+
+\hspace{1em} H -$>$ maksimum w zakresie (C, alpha1 +alpha2)
+
+\noindent \textbf{else }
+
+ \hspace{1em}L -$>$ maksimum w zakresie (0, alpha2 +alpha1)
+
+ \hspace{1em}H -$>$ maksimum w zakresie (C,C - alpha1 + alpha2)
+
+\noindent \textbf{if} warto\'{s}\'{c} bezwzgl\k{e}dna różnicy między L oraz H mieści się w zakresie tolerancji
+
+ \hspace{1em}return 0 
+
+\noindent k11 -$>$ wynik funkcji kernel(i1, i1)
+
+\noindent k12 -$>$ wynik funkcji kernel(i1, i2)
+
+\noindent k22 -$>$ wynik funkcji kernel(i2, i2);
+
+\noindent eta = 2 * k12 - k11 - k22;
+
+\noindent \textbf{if }eta mniejsza od 0
+
+ \hspace{1em}a2 = alpha2 + y2 * (e2 - e1) / eta;
+
+ \hspace{1em}\textbf{if} a2 mniejsze od L
+
+  \hspace{2em}a2 równe L
+
+ \hspace{1em}\textbf{else if} a2 $>$ H
+
+  \hspace{2em}a2 = H
+
+\noindent \textbf{else}
+
+ \hspace{1em}Lobj = objective function at a2=L
+
+\hspace{1em} Hobj = objective function at a2 = H
+
+ \hspace{1em}\textbf{if }Lobj większe od Hobj - eps
+
+  \hspace{2em}a2 = L
+
+ \hspace{1em}\textbf{else if} Lobj mniejsze od Hobj-eps
+
+  \hspace{2em}a2 = H
+
+ \hspace{1em}\textbf{else}
+
+  \hspace{2em}a2 = alpha2
+
+\noindent \textbf{if} (fabs(a2 - alpha2) $<$ epsilon * (a2 + alpha2 + epsilon)) 
+
+  \hspace{1em}return 0
+
+\noindent a1 = alpha1 + s * (alpha2 - a2); 
+
+\noindent aktualizacja wartości b, arrayError
+
+\noindent umieszczenie a1 oraz a2 w alphaArray
+
+\noindent return 1
+
+\noindent \textbf{}
+\\ \hline
+\end{tabular}
+
+ Po zakończeniu czasu treningowego, zwracany jest jego czas, a następnie wywoływana jest funkcja predykcyjna na próbkach testowych. Następnie na obiekcie klasyfikatora wywoływano funkcję predykcyjną predict(), wyznaczająca przynależność próbek testowych do konkretnej klasy oraz podstawowe statystyki skuteczności klasyfikacji i czas klasyfikacji.
+
+\subsubsection{Dokumentacja}
+
+\textbf{class SVMClassifier}\\ Implementacja rozwiązania w języku C++ wymagała zastosowania programowania obiektowego, więc stworzono klasę SVMClassifier. \\
+
+Zmienne protected klasy SVMClassifier:\\
+\textbf{double C} - wartość typu double\\
+\textbf{double epsilon} - wartość typu double epsilon ustawiona na 0.0001\\
+\textbf{char fNameTrain[256]} - zmienna typu char, nazwa pliku z próbkami treningowymi, maksymalna długość 256,\\
+\textbf{char fNameTest[256]} -  zmienna typu char, nazwa pliku z próbkami testowymi, maksymalna długość 256\\
+\textbf{char fNameResults[256]} -  zmienna typu char, nazwa pliku z rezultatami, maksymalna długość 256\\  
+\textbf{int N }- zmienna typu int, liczba próbek treningowych, początkowa wartość równa 0,\\
+\textbf{int NTestSamples} - zmienna typu int, liczba próbek testowych, początkowa wartość równa 0,\\
+\textbf{TVectorArray arrayX} - wektor wektorów par obiektów typu int i float, zawiera próbki treningowe,\\
+\textbf{TFloatArray arrayY }- wektor wektorów par obiektów typu int i float, zawiera próbki testowe\\
+\textbf{TFloatArray alpha} - wektor z wartosciami alpha, poczatkowa inicjalizacja zerami\\
+\textbf{TFloatArray d }- macierz pomocnicza w obliczeniach\\
+\textbf{TFloatArray arrayError }- macierz błedów \\
+\textbf{float b }- wartość b\\
+\textbf{float bDiff }- delta b\\
+
+Metody klasy SVMClassifier:\\
+\textbf{SVMClassifier()} - konstruktor, tworzy obiekt SVMClassifier\\
+\textbf{~SVMClassifier()} - destruktor\\
+\textbf{int train() }- funkcja ucząca klasyfikatora,implementuje główna procedure uczenia minimalną optymalizacja sekwencyjna, zapisuje rezultaty do pliku\\
+\textbf{int examineExample(int i1) }- funkcja która przy wywołaniu otrzymuje indeks alphy, sprawdza warunki KKT(herustyka) oraz wyszukuje wartosci alpha2, następnie wywołuje funkcje takeStep() - optymalizacja dwóch punktów\\
+\textbf{int takeStep(int i1, int i2)}- optymalizacja dwóch mnożników Lagrange'a, zwraca 1 w przypadku udanej optymalizacji, 0 w przypadku nieudanej, i1, i2 - indexy alph\\
+\textbf{int predict()}- funkcja klasyfikująca próbki testowe\\
+\textbf{float errorRate()} - funkcja zwracająca Error Rate;\\
+\textbf{int loadResults(std::ifstream is)}- funkcja otwierająca/tworząca plik z rezultatami \\
+\textbf{void writeResultModel(std::ofstream os)} - funkcja zapisująca rezultaty do pliku\\
+\textbf{float kernel(int i1, int i2)} - funkcja quadratic kernel zwracająca wartość K\\
+\textbf{float learnedFnc(int k)} - wywoływane po zoptymalizowaniu, wylicza wartość nauczonej funkcji w punkcie k\\
+
+
+\subsubsection{Another functions}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+\textbf{typedef std::string TString}\\*
+\textbf{typedef std::vector$\langle std::string\rangle$ TStringArray} - wektor obiektów typu string,\\*	
+\textbf{typedef std::pair $\langle int, float \rangle$ TVectorDim} - pary obiektów typu int oraz float\\*
+\textbf{typedef std::vector $\langle TVectorDim \rangle$ TVector }- wektor par obiektów typu int oraz float,\\*
+\textbf{typedef std::vector $\langle TVector \rangle$ TVectorArray} - wektor wektorów par obiektów typu int oraz float, \\*
+\textbf{int splitCSV(const TString\& s, char c, TStringArray\& v)} - funkcja rozdzielająca plik .csv\\
+\textbf{int readSample(TString\& s, TVector\& x, float\& y)}- funkcja czytająca pojedyńczą próbkę z pliku csv\\
+\textbf{int writeSample(TString\& s, TVector\& x, float\& y)} - funkcja zapisującą próbkę do macierzy z cechami oraz z etykietami klasy\\
+\textbf{int partReadSample(std::ifstream\& is, TVectorArray\& arrayX, TFloatArray\& arrayY, int\& n) }- funkcja czytająca cały plik z próbkami\\
+\textbf{int partWriteSample(std::ofstream\& os, TVectorArray\& arrayX, TFloatArray\& arrayY, int\& n)} - funkcja zapisująca do pliku\\
+\textbf{float dotProduct(const TVector\& v1, const TVector\& v2)} - funkcja obliczająca iloczyn skalarny\\
+\textbf{TVector operator*(const TVector\& v, float f) }- przeciążenie operatora \\
+\textbf{TVector operator*(float f, const TVector\& v)}- zwraca wektor v*f\\
+\textbf{TVector operator+(const TVector\& v1, const TVector\& v2) }- przeciążenie operatora +\\
+
+\subsubsection{Aplikacja}
+\noindent Aplikacja ,,Quadratic Support Vector Machine'' (QSVM) napisana jest w języku C++.
+
+\subsubsection{Wymagania techniczne}  
+
+\noindent W celu zapewnienia poprawności działania aplikacji należy spełnić poniższe kryteria :
+
+\noindent - komputer PC, 
+
+\noindent - system operacyjny Microsoft Windows ( program tworzony na Microsoft Windows 10 ),
+
+\noindent - zainstalowany kompilator g++ (C++) np. pakiet MinGW z GCC.
+
+\subsubsection{Uruchamianie aplikacji}
+
+\noindent 
+Program jest kompilowanych w kompilatorze g++ , jednak w tym celu konieczne jest wypisanie w komendzie wszystkich plików nagłówkowych i źródłowych oraz nazwy pliku wyjściowego qsvm (w przypadku pominięcia zostanie utworzony domyślny plik wyjściowy a.exe). Zastosowanie komendy pokazanej na poniższym obrazku skutkuje utworzeniem pliku wykonywalnego qsvm.exe, który nie wymagania instalowania ani konfigurowania (skompilowana wersja programu została również umieszczona w repozytorium projektu).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=4.50in, height=1.32in]{kompilacja.jpg}\\
+\caption{Przykład wywoływania programu w kompilatorze g++ na systemie operacyjnym Microsoft Windows 10 (opracowanie własne).}
+\end{figure}
+
+\noindent Uruchomienie programu qsvm.exe rozpoczyna on działanie na próbkach trainset.csv oraz testset.csv i wyświetla on numer iteracji programu oraz Error rate podczas poszczególnych iteracji (poniższy rysunek). 
+\begin{figure}[h]
+\centering
+\includegraphics[width=4.50in, height=1.32in]{wywolanie.jpg}\
+\caption{Wyświetlenie numeru iteracji oraz Error rate (opracowanie własne).}
+\end{figure}
+
+
+
+\noindent Efekt klasyfikacji wyświetlany po zakończeniu programu -- etykiety próbek dla testset.csv oraz dokładność klasyfikacji i czasy treningu oraz predykcji .
+\begin{figure}[h]
+\centering
+\includegraphics[width=4.50in, height=1.32in]{results.jpg}\\
+\caption{Dane zwracane przez program po zakończeniu klasyfikacji (opracowanie własne).}
+\end{figure}
+
+\subsection{Badania eksperymentalne} 
+
+\noindent W tej części przedstawimy rezulataty badań eksperymentalnych nad QSVM metodą SMO.
+
+
+\subsubsection{Zbiór Iris}
+
+
+\noindent Do wstępnego określenia skuteczności klasyfikacji zaimplementowanego rozwiązania zastosowano zbiór próbek ,,iris'' opisujący 150 przykładów należących do jednej z trzech klas będących różnymi typami rośliny irysów. Każdy typ irysa reprezentowany jest przez 50 przykładów opisanych przez 4 atrybuty określające wymiary składowych kwiatów. 
+
+\noindent Pierwotna wersja klasyfikatora SVM odnosi się do dwóch klas. Istnieją metody pozwalające osiągnąć wieloklasową maszynę wektorów nośnych, jednak jest to związane z użyciem wielokrotnej klasyfikacji. Występują dwa podejścia rozwiązania problemu wieloklasowości maszyny wektorów nośnych:
+
+\noindent \textit{- one against all}- zakłada stworzenie liczby klasyfikatorów równą liczbie klas. Każdy klasyfikator ma zbiór uczący podzielony na dwie części. Jedna część składa się ze zbioru uczącego jednej klasy, a druga złożona jest z pozostałych klas. Konkretna analizowana próbka poddawana jest klasyfikacji we wszystkich klasyfikatorach. Za wynik uważana jest klasa zwracająca maksymalny wynik.
+
+\noindent - \textit{one against one }- polega na stworzeniu wszystkich N możliwych kombinacji dwuelementowych wszystkich k klas, czyli . Dane uczące każdego klasyfikatora zawierają dwie klasy. Wynikiem tego algorytmu, czyli określeniem przynależności do klasy jest największa liczba klasyfikacji do danej klasy ze wszystkich klasyfikatorów [30].
+
+\noindent 
+
+\noindent W tym przypadku wykorzystano metodę \textit{one against one}, ze wszystkich próbek stworzono po 3 zbiory uczące (80 próbek) oraz testowe (20 próbek ). Poniżej przedstawiono osiągnięte wyniki.
+
+ \textit{Tabela 1. Wyniki klasyfikacji dla zbioru Iris}
+ \newline
+\begin{tabular} {|p{2.1in}|p{2.1in}|} \hline 
+Zbiór próbek  & Osiągnięte wyniki \\ \hline 
+Setosa + versicolor & Accuracy: 100\% (20/20)\newline Train time:     0.059\newline Predict time:   0.037\newline Total time:     0.096 \\ \hline 
+Versicolor + virginica & Accuracy: 100\% (20/20)\newline Train time:     1.728\newline Predict time:   0.016\newline Total time:     1.744 \\ \hline 
+Setosa + virginica & Accuracy: 100\% (20/20)\newline Train time:     0.009\newline Predict time:   0.019\newline Total time:     0.028 \\ \hline 
+\end{tabular}
+
+
+
+\noindent Na podstawie uzyskanych wyników można stwierdzić, że klasyfikator działa prawidłowo, ma on 100 \% skuteczności. Łatwo jest również zauważyć, iż dla zestawu próbek versicolor +  virginica czas train time jest najdłuższy. Tym samymm predict time jest najkrótszy co świadczy o tym, iż próbki zostały w odpowiedni sposób wytrenowane i dzięki temu klasyfikacja ich jest szybka. Dla zestawu próbek setosa + versicolor czas predict time jest najdłuższy. Moża stwierdzić, że algorytm w sposób najszybszy potraktował zestaw próbek setosa+virginica. 
+
+\noindent 
+
+\noindent 
+
+\subsubsection{Wykorzystanie klasyfikatora do rozpoznawania uderzeń serca}
+
+\noindent Każdy z klasyfikatorów wykonanych w ramach projektów grupy C testowane były przy pomocy dwóch określonych zbiorów danych, zawierających w sobie cechy opisujące uderzenia serca, w celu uwiarygodnienia porównania między sobą klasyfikatorów. W obu grupach uderzenia zostały podzielone na dwie klasy: uderzenia V, określające uderzenia wygenerowane w obrębie komory, zaliczane do patologicznych oraz uderzenia N -$>$ reprezentujące normalna, poprawna prace serca.
+
+\subsubsection{ Zbiór danych 1}
+
+\noindent Pierwszy zbiór danych składał się z pięciu cech opisujących uderzenia serca, bazując na interwałach RR ( kolejne szczyty zespołów QRS) . Do wyznaczenia zbioru próbek wykorzystano sygnały znajdujące się w bazie danych MIT-BIH (Massachussetts Institute of Technology -- Beth Israel Hospital) -- standardowa arytmiczna baza danych wykorzystano sygnały 228.dat oraz 100.dat .
+
+\noindent Wykorzystane cechy : 
+
+\begin{enumerate}
+\item  \textbf{Pre interval} RR - odległość miedzy aktualnym uderzeniem serca(analizowanym), a poprzednim uderzeniem serca,
+
+\item  \textbf{Post inreval RR} - odległość miedzy analizowanym uderzenie serca a kolejnym uderzeniem,
+
+\item  \textbf{Average RR} - średnia długość interwału RR dla całego analizowanego sygnału,
+
+\item  \textbf{Ratio1} - stosunek pre RR interval do post RR interval,
+
+\item  \textbf{Ratio2 }- stosunek per interwalu do Avarage RR.
+\end{enumerate}
+
+\noindent Uzyskane próbki podzielono na dwie części w stosunku 4:1, 400 próbek treningowych oraz 100 próbek testowych. Poniżej w tabeli przedstawiono uzyskane wyniki rozpoznania próbek odpowiednio do klas N oraz V.
+
+\textit{Tabela 2. Tabela uzyskanych wyników dla zbioru danych 1}
+\newline
+\begin{tabular}{|p{1.1in}|p{1.1in}|p{1.1in}|p{1.1in}|} \hline 
+ & Dobrze rozpoznane & \'{Z}le rozpoznane & Całość klasy  \\ \hline 
+Uderzenia N & 48 & 2 & 0,99 \\ \hline 
+Uderzenia V & 49 & 2 & 0,98 \\ \hline 
+\multicolumn{3}{|p{1in}|}{Skuteczność rozpoznawania [\%]:} & 97 \\ \hline 
+\end{tabular}
+
+
+
+\noindent Proces uczenia trwał dla systemu QSVM 24780 ms, natomiast czas klasyfikacji 59 ms, długa ilość uczenia systemu spowodowana jest skomplikowanym algorytmem SMO i konieczności przejścia dużej liczby iteracji do zoptymalizowania dwóch punktów. Można uznać, że skuteczność klasyfikacji uzyskano na wysokim poziomie, 97 \%. 
+
+\noindent Dla uzyskanych wyników również wyliczono czułość ( ang. Sensitivity), wyliczona z poniższego wzoru:
+ $$
+sensitivity = \frac{TP}{TP + FN}
+$$
+
+\noindent TP (ang. Truepositive) -- liczba poprawnie sklasyfikowanych przykładów wybranej klasy,
+
+\noindent FN ( ang. Falsenegative) -- liczba błędnie sklasyfikowanych przykładów z tej klasy,
+
+\noindent Czułość klasyfikacji wynosi 96 \%. Wyznaczono również specyficzność klasyfikacji ( ang. Specifity) może być wyznaczona jako stosunek TN do sumy FP oraz TN.
+
+ $$
+specifity = \frac{TN}{FP + TN}
+$$
+\\
+TN ($ang. true negative$) - liczba przykładów poprawnie nie przydzielonych do wybranej klasy (poprawnie odrzuconych z $ang. correct rejection$)\\
+\\
+FP ($ang. false positive$) - liczba przykładów błędnie przydzielonych do wybranej klasy, podczas gdy w rzeczywistości do niej nie należą ($ang. false alarm$)\\
+
+\noindent Specyficzność tej klasyfikacji wynosi również 96 \%. 
+
+\subsubsection{Zbiór danych 2} 
+
+\noindent Drugi zbiór danych również reprezentowała 5 cech sygnału z uderzeniami serca. Próbki podzielone również były w tak samo liczne grupy treningowe i testową. W skład grupy testowej wchodziło 100 próbek, natomiast do treningowej wchodziło 400 próbek.
+
+\noindent Zbiór danych numer 2 zawierał w sobie cechy :
+
+\begin{enumerate}
+\item  Stosunek pola do obwodu (współczynnik Malinowskiej) 
+ \\$p_1 = \frac{\sum_{k=1}^{N} s[k]}{\sum_{k=2}^{N} s[k]-s[k-1]}$
+
+\item  Wartość międzyszczytowa
+\\$p_2 = \frac{\max_{k \in <1,N>} s[k]}{\min_{k \in <1,N>} s[k]}$
+
+\item  Procent próbek sygnału, które są ujemne    \\$p_3 = 100\% * \frac{\sum_{k=1}^{N} u[k]}{N}$ 
+
+\item  Stosunek maksymalnej prędkości do maksymalnej amplitudy 
+\\$p_4 = \frac{\max_{k \in <3,N>} s[k]-s[k-2]+2s[k-1]}{|\max_{k \in <1,N>} s[k] - \min_{k \in <1,N>} s[k]|}$
+
+\item  Stosunek liczby próbek sygnału, których prędkość przekracza 40\% maksymalnej prędkości obserwowanej 
+\\$p_5 = \frac{\sum_{k=1}^{N} g[k]}{N}$
+
+\end{enumerate}
+\textit{Tabela 3. Wynik klasyfikacji dla zbioru 2}
+\newline
+\begin{tabular}{|p{1.2in}|p{1.0in}|p{1.0in}|p{1.0in}|} \hline 
+ & Dobrze rozpoznane & \'{Z}le rozpoznane & Całość klasy  \\ \hline 
+Uderzenia N & 76 & 0 & 1 \\ \hline 
+Uderzenia V & 22 & 2 & 0,96 \\ \hline 
+\multicolumn{3}{|p{1in}|}{Skuteczność klasyfikacji [\%] } & 98 \\ \hline 
+\end{tabular}
+
+
+
+\noindent Dla klasyfikacji tego zbioru danych również wyznaczono wartość czułości i skuteczności klasyfikacji analogiczną metodą przedstawioną w ostatnim podrozdziale. Czułość w przypadku tego zbioru danych osiągnęła maksymalne 100 \%, a specyficzność 91,6 \%.
+
+\noindent Accuracy: 98\% (98/100)
+
+\noindent Train time:     22.943
+
+\noindent Predict time:   0.01
+
+\noindent Total time:     22.953
+
+\noindent Uczenie klasyfikatora zajęło 22.953 s, natomiast czas klasyfikacji 0.01 s, jest to znacznie niższa liczba prawdopodobnie spowodowana zastosowaniem innych cech charakteryzujących sygnał. 
+
+\noindent Różna ilość cech wykorzystanych do klasyfikacji.
+
+\noindent 
+
+\noindent 
+
+\subsubsection{Porównanie klasyfikacji z różna ilością cech} 
+\noindent W celu określenia działania klasyfikacji przetestowano również testowanie klasyfikatora z różną ilością cech określających sygnał. Kolejno z 1, 2, 3, 4 cechami w próbkach uczących i testowych. Poniżej przedstawiono w tabeli uzyskane wyniki.\\
+\textit{ Tabela 4. Porównanie klasyfikacji dla róznej ilości cech}
+\newline
+\begin{tabular}{|p{0.25\linewidth}|p{0.8in}|p{0.8in}|p{0.8in}|p{0.8in}|} \hline 
+ & \textbf{1 cecha} & \textbf{2 cechy} & \textbf{3 cechy} & \textbf{4 cechy} \\ \hline 
+\textbf{Skuteczność rozpoznawania [\%]} & 98 \% & 98 \% & 98 \% & 98 \% \\ \hline 
+\textbf{Czas uczenia [s]} & 43.1 & 10.427 & 17.613 & 25.13 \\ \hline 
+\textbf{Czas klasyfikacji [s]} & 0.009 & 0.011 & 0.009 & 0.011 \\ \hline 
+\textbf{Czułość} & 100 & 100 & 100 & 100 \\ \hline 
+\textbf{Specyficzność} & 91,6 & 91,6 & 91,6 & 91,6 \\ \hline 
+\end{tabular}\\
+
+
+
+\noindent Z powyższych uzyskanych wyników można zauważyć, że skuteczność klasyfikacji jest na tym samym poziomie bez względu na ilość zastosowanych cech. Również analizując uzyskane wyniki niepoprawnie zostały sklasyfikowane te same próbki w każdym przypadku. Jednak przypadki między sobą różnią się długością czasu klasyfikacji oraz ilością koniecznych iteracji do nauczenia się programu. Z rosnącą ilością cech opisujących sygnały czas klasyfikacji ma tendencję malejącą do 3 cech, a następnie dla 4 cech i 5 do około 22-25 s. Dla jednej cechy czas uczenia był najdłuższy zajął aż 43.1 sekundy. Najszybszym nauczeniem charakteryzował się zbiór danych z dwoma cechami oraz trzema. Oznacza to, ze dla klasyfikatora należy wybrać pośrednią liczbę cech (najlepiej zachowuje się przy niezbyt niskiej i niezbyt wysokiej liczbie próbek). 
+
+\noindent 
+
+\noindent 
+
+
+\newpage
+\subsection{Porównanie wyników różnych klasyfikatorów}
+W tym rozdziale przedstawimy różnicę w wynikach uzyskanych dla wszytskich klasyfikatorów: k-Neraest Neighbours (kNN), Extended Nerest Neighbours (eNN), Radial Basis Function Kernel (RBF SVM), klasyfikator Bayesa, Linear SVM, Quadratic SVM.
+\subsection{Zbiór danych 1}
+Poniżej przedstawiono wyniki uzyskane podczas klasyfikacji zbioru danych nr 1 przez wszystkie klasyfikatory. Wyznaczono takie parametry jak: skuteczność klasyfikacji, czas uczenia, czas klasyfikacji, czułość oraz specyficzność.\\
+\textit{Tabel 6. Wyniki klasyfikacji wszystkich użytych klasyfikatorów dla zbioru 1}
+\newline
+\begin{tabular}{|p{0.25\linewidth}|p{0.48in}|p{0.48in}|p{0.48in}|p{0.48in}|p{0.48in}|p{0.48in}|p{0.48in}|} \hline 
+ & \textbf{kNN} & \textbf{ENN} & \textbf{Linear SVM} & \textbf{SVM + RBF} & \textbf{Naive Baye} & \textbf{LDA} & \textbf{QSVM} \\ \hline 
+\textbf{Skuteczność klasyfikacji [\%]}  \textbf{} &99  & 99 & 99.7261 & 92.8789 & 99.8783 & 99.73 & 97 \\ \hline 
+\textbf{Czas uczenia [ms]} & brak & brak & 25003 & 7865 & 22.0936 & 3 & 24780 \\ \hline 
+\textbf{Czas klasyfikacji [ms]} & 3563 & 36328 & 26 & 1961 & 1925 & 13 & 59 \\ \hline 
+\textbf{Czu{\l}o\'{s}\'{c}} & 99 & 99 & 99.7129 & 92.5678 & 99.9681 & 98.68 & 96 \\ \hline 
+\textbf{Specyficzność} & 100 & 100 & 100 & 100 & 98.0132 & 95.83 & 96 \\ \hline 
+\end{tabular}
+\newline
+
+Badany klasyfikator QSVM w porównaniu do innych badanych klasyfikatorów na tym zbiorze danych zajął 6 miejsce mimo osiągnięcia dosyć wysokiego wyniku poprawnego sklasyfikowania uderzenia serca, 97 procent. Z tabeli wynika, że QSVM zalicza się do klasyfikatorów długo uczących się, osiągnęło zbliżone wyniki do pozostałych padanych  SVM z innymi jądrami, więc QSVM pod względem czasu uczenia jest jednym z gorszych klasyfikatorów. Jednak zaletą SVM jest szybki czas klasyfikacji, co też widać z powyższych danych, że QSVM jest trzeci najszybszy w klasyfikacji.  \\
+
+\scalebox{0.9}{
+ \begin{bchart}[max=100, unit=\%]
+ \bcbar[label={Klasyfikatory}, text=kNN,
+ color=white]{99}
+ \bcbar[text=ENN, color=gray!50]{99}
+ \bcbar[text=linear SVM, color=gray!10]{99.7261}
+\bcbar[text=SVM + RBF, color=gray!50]{92.8789}
+ \bcbar[text=Naive Baye, color=gray!80]{99.8783}
+ \bcbar[text=LDA, color=gray!80]{99.73}
+ \bcbar[text=QSVM, color=gray!80]{97}
+ \bcxlabel{\% Skutecznosc}
+ \end{bchart}
+ }
+ \newline
+ \textit{Wykres 1. Wykres procentowy przedstawiający skuteczność klasyfikacji wszystkich użytych klasyfikatorów dla zbioru 1}
+\newline
+
+\subsection{Zbiór danych 2}
+\textit{Tabel 5. Wyniki klasyfikacji wszystkich użytych klasyfikatorów dla zbioru 2}
+\newline
+\begin{tabular}{|p{0.25\linewidth}|p{0.45in}|p{0.45in}|p{0.45in}|p{0.45in}|p{0.45in}|p{0.45in}|p{0.45in}|} \hline 
+ & \textbf{kNN} & \textbf{ENN} & \textbf{Linear SVM} & \textbf{SVM + RBF} & \textbf{Naive Baye} & \textbf{LDA} & \textbf{QSVM} \\ \hline 
+\textbf{Skuteczność klasyfikacji [\%]}  \textbf{} &98  & 98 &76 & 99 & 96 & 98 & 98 \\ \hline 
+\textbf{Czas uczenia [ms]} & brak & brak & 8517 & 13481 & 21.9 & 15 & 22953 \\ \hline 
+\textbf{Czas klasyfikacji [ms]} & 109 &1094 & 1 & 79 & 29.29 & 1 & 10 \\ \hline 
+\textbf{Czułość} & 97 & 100 & 100 & 100 & 97.36 & 99.78 & 100 \\ \hline 
+\textbf{Specyficzność} & 100 & 92 & 4 & 96 & 92 & 98.67 & 91.6 \\ \hline 
+\end{tabular}
+\newline
+Biorąc pod uwagę skuteczność klasyfikacji dla zbioru 2 jedynie klasyfikator SVM + RBF wykazał lepszy wynik. QSVM razem z kNN, ENN i LDA rozpoznaje na poziomie 98. Jak już wspomniano czas uczenia dla tego klasyfikatora jest długi. Warto jednak tu podkreślić, że czas klasyfikacji dzięki dobremu wytreniowaniu zbioru jest stosunkowo krótki. 
+\newpage
+\scalebox{0.9}{
+ \begin{bchart}[max=100, unit=\%]
+ \bcbar[label={Klasyfikatory}, text=kNN,
+ color=white]{98}
+ \bcbar[text=ENN, color=gray!50]{98}
+ \bcbar[text=linear SVM, color=gray!10]{76}
+\bcbar[text=SVM + RBF, color=gray!50]{99}
+ \bcbar[text=Naive Baye, color=gray!80]{96}
+ \bcbar[text=LDA, color=gray!80]{98}
+ \bcbar[text=QSVM, color=gray!80]{98}
+ \bcxlabel{\% Skutecznosc}
+ \end{bchart}
+ }
+  \newline
+ \textit{Wykres 2. Wykres procentowy przedstawiający skuteczność klasyfikacji wszystkich użytych klasyfikatorów dla zbioru 2}
+ 
+ 
+ \subsection{Wnioski}
+ QSVM na tle innych użytych klasyfikatorów kNN, ENN, linear SVM, SVM + RBF, Naive Baye i LDA wykazał się stosunkowo dobrą skutecznościa. Dla zbioru danych 1 wynik ten jest znacznie gorszy w porównaniu do liniowego odpowiednika SVM, który to osiągnął skuteczność prawie stu procentową. Czas uczenia był porównywalny do QSVM jednak czas klasyfikacji był już krótszy. Warto tu podkreślić, że metoda SVM dobrze sobie radzi z nadmiernym dopasowaniem danych. Dla zbioru 2 skuteczność dla większości klasyfikatorów była porównywalna. 
+ \newline QSVM charakteryzuje stosunkowo dlugi czas uczenia. Związane jest to z faktem, iż metoda ta wymaga użycia Quadratic Programming co dla dużej ilości danych powoduje problem z szybkością działania algorytmu. W celu uniknięcia tego stosuję się opisaną na początku pracy metodę dekompozycji dzięki, której  zbiór rozpatrywany jest w kilku etapach. 
+\begin{thebibliography}{10}
+	
+	\bibitem{platt}
+	Platt John
+	\textit{Sequential Minimal Optimalization: A fast Algorithm for Ftaining Support Vector Machines} 
+	Microsoft Reasearch, Technical Report, MSR-TR-98-12, 1998
+	\bibitem{mgr}
+	Marcin Orchel
+	\textit{Klasyfikacja danych wielowymiarowych algorytmami SVM} 
+	Praca magisterska, Akademia Górniczo-Hutnicza, Wydział Elektrotechniki Automatyki Informatyki i Inżynierii Biomedycznej
+	\bibitem{simplified}
+	\textit{The Simplified SMO Algorithm} 
+	 CS229 Machine Learning, Stanford
+	 \bibitem{iowa}
+	Vasant Honavar 
+	\textit{Sequential MinimalOptimalization for SVM} 
+	Iowa State University, Computer Science Department 
+ \bibitem{blog}
+	Juan Miguel 
+	\textit{[SVM Matlab code implementation] SMO (Sequential Minimal Optimization) and Quadratic Programming explained} 
+	http://laid.delanover.com/svm-matlab-code-implementation-smo-sequential-minimal-optimization-and-quadratic-programming-explained/
+	\bibitem{kmiec}Marcin Kmieć
+	\textit{Wykrywanie niebezpiecznych przedmiotów w automatycznie
+analizowanych sekwencjach wideo} 
+	  Akademia Górniczo-Hutnicza, Kraków
+	  \bibitem{sieci}Piotr Walendowski
+	\textit{Zastosowanie sieci neuronowych typu SVM do
+rozpoznawania mowy.} 
+	  Politechnika Wrocławska, Wydział Elektroniki, Wrocław
+\end{thebibliography}
+\end{enumerate}
+\newpage
+\section{Porównanie algorytmów}
+Porównania dokonano korzystając z dwóch zbiorów danych, w których każdy składał się z innego zestawu cech opisujących uderzenia serca. W obu grupach uderzenia zostały podzielone na dwie klasy: uderzenia \textit{V}, określające uderzenia wygenerowane w obrębie komory, zaliczane do paralogicznych oraz uderzenia \textit{N} reprezentujące normalną, poprawną pracę serca. 
+
+Korzystając z wyznaczonych zbiorów danych klasyfikatory porównano pod kątem skuteczności, czasu uczenia, czasu klasyfikacji, czułości i specyficzności w celu wskazania, który z klasyfikatorów najbardziej sprawdza się w rozpoznaniu uderzeń serca. 
+
+\subsection{Opis zbiorów danych}
+\subsubsection{Zbiór danych 1}
+Pierwsza grupa danych opisana jest pięcioma cechami, bazującymi na interwałach RR,są nimi:
+\begin{itemize}
+\item Pre interval RR - odległość miedzy aktualnym uderzeniem serca(analizowanym), a poprzednim uderzeniem serca,
+\item Post inreval RR  - odległość między analizowanym uderzenie serca a kolejnym uderzeniem,
+\item Average RR - średnia długość interwału RR dla całego analizowanego sygnału,
+\item Ratio1 - stosunek pre RR interwal do post RR interval,
+\item Ratio2 - stosunek per interwalu do Avarage RR.
+\end{itemize}
+
+Cechy zostały wyznaczone dla sygnałów 228.dat i 100.dat pochodzących z bazy danych MIT-BIH. Z wyznaczonych danych utworzono dwie grupy: treningową oraz testową, które odpowiednio składały się z 400 i 100 próbek. 
+
+\subsubsection{Zbiór danych 2}
+Kolejna grupa danych również reprezentowana jest przez 5 cech. Cechy te jednak zdecydowanie różnią się od poprzednich. W ich skład wchodzą takie cechy jak:
+
+\begin{itemize}
+	\item{Stosunek pola do obwodu (współczynnik Malinowskiej)[wzór nr 26]}
+	
+	\item{Wartość międzyszczytowa [wzór nr 27]}
+	
+	\item{Procent próbek sygnału, które są ujemne [wzór nr 28]}
+	
+	\item{Stosunek maksymalnej prędkości do maksymalnej amplitudy [wzór nr 29]}
+	
+	\item{Stosunek liczby próbek sygnału, których prędkość przekracza 40\% maksymalnej prędkości obserwowanej w sygnale[wzór nr 30]}
+	
+\end{itemize}
+
+Z tych otrzymanych danych również wyznaczono grupę treningową i testową. W skład grupy testowej wchodziło  100 próbek, a treningowej 400 próbek.
+
+\subsection{Skuteczność klasyfikacji}
+
+Jednym z pierwszym parametrów jakie postanowiono porównać jest skuteczność klasyfikacji, czyli stosunek poprawnie rozpoznanych uderzeń serca do wszystkich jakie występują w zbiorze testowym. Poprawność przyporządkowania klasy do danego obiektu jest istotą działania każdego klasyfikatora i jedną z kluczowych jego cech. Procentową skuteczność każdego klasyfikatora  dla obu zestawów danych prezentują Tabele 3 i 4.
+
+\begin{table}[h]
+\centering
+\caption{Skuteczność klasyfikacji - zbiór danych 1}
+\label{accuracyTable2}
+\begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+kNN & ENN & Linear SVM & SVM + RBF & Naive Bayes & LDA & Quadratic SVM \\ \hline
+  99\%   &  99\%  & 99.7261\%       & 92.8789\%      & 99.8783\%        &   99.73\%  & 97\%\\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Skuteczność klasyfikacji - zbiór danych 2}
+\label{accuracyTable1}
+\begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+kNN & ENN & Linear SVM & SVM + RBF & Naive Bayes & LDA & Quadratic SVM\\ \hline
+  98\%   &  98\%  & 76\%       & 99\%      & 96\%         & 98\%	& 98\%  \\ \hline
+\end{tabular}
+\end{table}
+
+Dla sześciu klasyfikatorów skuteczność poprawnego zaklasyfikowania uderzenia serca jest wysoka i wynosi ponad 95\% dla obu zestawów danych. Dla zbioru danych 1,  skuteczność pięciu klasyfikatorów przekroczyła wartość 92\%.  Aż pięć klasyfikatorów w 99\%-tach i wyżej poprawnie rozpoznały typ uderzenia serca. Najniższą wartość otrzymano dla klasyfikatora SBM + RBF, która wynosi 92,88\%. Wynik ten mimo iż najwyższy jaki otrzymano dla tego zbioru danych i tak jest zadowalający. W przypadku zbioru danych 2, skuteczność nie jest już aż tak wysoka, tylko jeden klasyfikator(SVM + RBF) uzyskał wartość 99\%. Klasyfikator Linear SVM nie zbyt dobrze sprawdził się w przypadku tego zestawu danych, skuteczność wyniosła jedynie 76\%, co w porównaniu z resztą klasyfikatorów nie jest satysfakcjonującym wynikiem. Powodem tak niskiej wartości skuteczności może być charakter występujących cech w zborze danych 2. 
+
+
+
+
+
+\subsection{Czas uczenia i klasyfikacji}
+
+W celu sprawdzenia złożoności obliczeniowej zaproponowanych algorytmów, zmierzono czasy wykonania się kolejnych algorytmów. Wyróżniono dwa czasy: czas uczenia i czas klasyfikacji. Te parametry odgrywają znaczącą role w przypadku dużej ilości danych. Pożądanym jest, aby poprawne wyniki zostały uzyskane w jak krótszym czasie. Trzeba zaznaczyć, że sygnały EKG składają się z bardzo dużej ilości uderzeń serca z tego  powodu czas klasyfikacji jest w tym przypadku dosyć istotnym parametrem. Czasy uczenia i klasyfikacji zostały umieszczone w Tabelach 5 i 6. Aby dane były bardziej wiarygodne testy przeprowadzono na tym samym komputerze. 
+
+\begin{table}[h]
+\centering
+\caption{Czasy uczenia i klasyfikacji  - zbiór danych 1}
+\label{timesTable2}
+\begin{tabular}{l|l|l|l|l|l|l|l|}
+\cline{2-7}
+                                        & kNN & ENN & Linear SVM & SVM + RBF & Naive Bayes & LDA & QSVM \\ \hline
+\multicolumn{1}{|l|}{Czas uczenia}      &  -  &  -   &  $25003\: ms$   &   $7865\: ms$   &   $22.0936 \: ms$ & $3\: ms$  & $24 780\: ms$  \\ \hline
+\multicolumn{1}{|l|}{Czas klasyfikacji} &  $3563 \: ms$&   $36328\: ms$   &   $26\: ms$  &      $1961.08\: ms$&     $1925.88\: ms$        & $13 :\ ms$ &$59\:ms$ \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Czasy uczenia i klasyfikacji - zbiór danych 2}
+\label{timesTable1}
+\begin{tabular}{l|l|l|l|l|l|l|l|}
+\cline{2-7}
+                                        & kNN & ENN & Linear SVM & SVM + RBF & Naive Bayes & LDA &QSVM \\ \hline
+\multicolumn{1}{|l|}{Czas uczenia}      &  -  &  -   &  $8517\: ms$   &   $13481\: ms$   &   $21.9034\: ms$ & $15\: ms$  & $9400\:ms$  \\ \hline
+\multicolumn{1}{|l|}{Czas klasyfikacji} &  $109 \: ms$   &   $1094\: ms$   &   $1\: ms$  &      $79\: ms$     &     $29.2936\: ms$        & $< 1\: ms$ & $65\:ms$ \\ \hline
+\end{tabular}
+\end{table}
+
+\emph{Testy wykonano na komputerze wyposażonym w procesor Intel Core i5-4200H o taktowaniu $2.80 \: GHz$ oraz 8 $Gb$ RAM w systemie operacyjnym Windows 10 64-bit. }\\
+
+W przypadku klasyfikatorów kNN i ENN, nie występuje w ogóle proces uczenia klasyfikatora, dlatego też nie ma informacji w tabeli. Dla pozostałych pięciu klasyfikatorów proces ten występuje i jak można odczytać z tabeli, czasy uczenia są bardzo zróżnicowane. Uczenie klasyfikatora najkrócej trawa w przypadku klasyfikatora Naive Bayes i LDA, jest to spowodowane tym, że na ten proces składa się tylko wyliczenie kilku wartości statystycznych dla każdej klasy. Zdecydowanie dłużej uczenie zajmuje dla klasyfikatorów Linear SVM, Quadratic SVM i SVM + RBF, gdzie to jest już bardziej złożony proces. Czasy te są kilka set razy wyższe w porównaniu z czasem Naive Bayes i LDA. W przypadku zestawy danych 1, najdłuższy czas uczenia zanotowano dla Linear SVM, który wynosił 25s, natomiast dla zbioru danych 2 najwyższa wartośc przypadła dla SVM + RBF i wynosiła 13,5s. 
+
+Czasy klasyfikacji podobnie jak czasy uczenia są bardzo zróżnicowane. W obu zestawach danych klasyfikacja najkrócej trwała dla Linear SVM i LDA. Różnica ta jest najbardziej widoczna dla pierwszego zestawu danych, gdzie czas klasyfikacji jest kilkadziesiąt razy krótszy niż dla pozostałych klasyfikatorów. Najgorzej pod tym względem wypadł klasyfikator ENN, gdzie dla zbioru 1 wyniósł 36,33s, a dla zbioru 2 10,94s. Dla porównania czas klasyfikacji dla Lineara SVM w zbiorze 2 osiągnął wartość 1ms. Jednak trzeba zwrócić uwagę na brak procesu uczenia dla tego klasyfikatora, co spowodowało wyższy czas klasyfikacji w porównaniu z resztą algorytmów, ponieważ algorytm ten porównuje próbkę wejściową z całym zbiorem uczącym dla różnych wartości k. Tak wiele iteracji skutkuje złożonością obliczeniową rosnącą wraz z ilością próbek w zbiorze treningowym. 
+
+\subsection{Czułość i specyficzność klasyfikatorów}
+
+W celu oceny opracowanych algorytmów pod kątem ich dokładności zdecydowano się na obliczenie ich czułości/wrażliwości oraz specyficzności.\\
+
+Wrażliwość/czułość ($ang. sensitivity$) może być wyznaczona jakos stosunek $TP$ do sumy $TP$ oraz $FN$.
+ $$
+sensitivity = \frac{TP}{TP + FN}
+$$
+gdzie\\
+\\
+TP ($ang. true positive$) - liczba poprawnie sklasyfikowanych przykładów z wybranej klasy ($ang. hit$)\\
+\\
+FN ($ang. false negative$) - liczba błędnie sklasyfikowanych przykładów z tej klasy, tj. decyzja negatywna podczas gdy przykład w rzeczywistości jest pozytywny (błąd pominięcia - z $ang. miss$)\\
+\\
+Specyficzność ($ang. specifity$) może być wyznaczona jakos stosunek $TN$ do sumy $FP$ oraz $TN$.\\
+ $$
+specifity = \frac{TN}{FP + TN}
+$$
+\\
+TN ($ang. true negative$) - liczba przykładów poprawnie nie przydzielonych do wybranej klasy (poprawnie odrzuconych z $ang. correct rejection$)\\
+\\
+FP ($ang. false positive$) - liczba przykładów błędnie przydzielonych do wybranej klasy, podczas gdy w rzeczywistości do niej nie należą ($ang. false alarm$)\\
+
+
+
+\begin{table}[h]
+\centering
+\caption{Porównanie czułości i specyficzności - zbiór danych 1}
+\label{sens2}
+\begin{tabular}{|l|l|l|l|l|l|l|l|}
+\hline
+              & kNN & ENN & Linear SVM & SVM + RBF & Naive Bayes & LDA &QSVM\\ \hline
+Czułość       &  99\%   &  99\%   &    99.7129\%        &     92.5678\%       &   99.9681\%   & 98.68\%      & 100\% \\ \hline
+Specyficzność &  100\%   &  100\%   &     100\%       &      100\%     &   98.0132\%     & 95.83\% & 91.6\%    \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Porównanie czułości i specyficzności - zbiór danych 2}
+\label{sens1}
+\begin{tabular}{|l|l|l|l|l|l|l|l|}
+\hline
+              & kNN & ENN & Linear SVM & SVM + RBF & Naive Bayes & LDA & QSVM\\ \hline
+Czułość       &  97\%  & 100\%  &    100\%    &    100\%   &      97.3684\% & 99.78\%  & 96\%   \\ \hline
+Specyficzność &   100\%   &  92\%   &     4\%       &     96\%   &       92\%  & 98.67\%  &96\%  \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+Dla wszystkich algorytmów wykonano testy czułości i specyficzności na dwóch zbiorach danych. We wszystkich przypadkach czułość wyniosła ponad 90\%, jednak zauważono drobne różnice dla różnych zbiorów danych. Wszystkie algorytmy oprócz kNN i QSVM wykazały lepszą czułość dla zbioru danych 2, a nieco gorsze wyniki otrzymano dla zbioru danych 1. Biorąc pod uwagę obydwa analizowane zbiory danych, zaobserwowano że najwyższą czułość wykazał algorytm ENN i Linear SVM,, która nie spadła poniżej 99\%. Biorąc pod uwagę drugi zbiór danych, najniższą wartość czułości osiągnął algorytm kNN, a przy testowaniu na zbiorze pierwszym – algorytm –SVM+RBF.
+
+Test porównujący specyficzność klasyfikatorów wykazał różne wyniku dla testowanych dwóch zbiorów danych. Podczas testowania na zbiorze drugim, wyniki były bardzo zróżnicowane, algorytm kNN wykazał pełną specyficzność, podczas gdy Linear SVM jedynie 4\%. Porównanie specyficzności dla zbioru danych 1 wykazało 100\% wartość parametru dla wszystkich metod za wyjątkiem metody Naive Bayes, która była o niecałe 2\% niższa od pozostałych. Analizując rezultaty uzyskane przy testowaniu na obydwu zbiorach danych, wysuwa się wniosek, że najwyższą specyficznością charakteryzuje się algorytm kNN. 
+
+\subsection{Podsumowanie}
+Biorąc pod uwagę obydwa zbiory danych najwyższą skutecznością i specyficznością wykazały się algorytmy kNN i ENN. Jednak obydwa algorytmy charakteryzuje dość wysoki czas klasyfikacji. Najniższym czasem charakteryzują się algorytmy kNN oraz Naive Bayes. W czułości przodują ENN, Linear SVM oraz Nayve Bayes. Pod względem specyficzności zdecydowanie najlepsze rezultaty uzyskujemy przy wykorzystaniu algorytmu ENN. 
+Podsumowując, biorąc pod uwagę wszystkie mierzone cechy algorytmów oprócz czasu działania (sumarycznego uczenia oraz klasyfikacji), najlepsze rezultaty uzyskujemy dzięki metodzie Extended Nearest Neighbour, jednak ze względu na duża wartość czasu klasyfikacji najbardziej optymalny na podstawie przeprowadzonych testów wydaje się algorytm Naive Bayes oraz Liniowa Analiza Dyskryminacyjna. Kosztem nieco niższej (ale nie spadającej poniżej 92\%) wrażliwości i skuteczności, w klasyfikacji metodą Naive Bayes osiągnięto najlepszy rezultat w zdecydowanie krótszym czasie. Może to okazać się znaczące przy zdecydowanie bardziej licznych zbiorach danych. Natomiast algorytm LDA przy zachowaniu wysokiej skuteczności, osiąga zdecydowanie najniższe czasy klasyfikacji oraz uczenia. Zwłaszcza przy testowaniu wielokrotnym czy też na dużych zbiorach danych, może okazać się to decydujące podczas wyboru algorytmu do klasyfikacji, ponieważ proces uczenia następuje tylko raz, a czasem wielokrotna klasyfikacja zajmie najmniej czasu (ponad 20 razy mniej niż w przypadku algorytmu Naive Bayes.
+Wykonana analiza wykazała, że różne algorytmy zachowują się w różnych sposób w zależności od specyfiki oraz liczebności zbioru treningowego i zbioru testowego. Oznacza to, że w zależności od zbioru danych oraz innych czynników (jak konieczność ograniczenia czasu klasyfikacji) należy dobierać odpowiednie metody klasyfikacji. Dobrą metodą jest też dokonanie klasyfikacji za pomocą kilku algorytmów, a następnie porównanie rezultatów.
+
+\end{document}
